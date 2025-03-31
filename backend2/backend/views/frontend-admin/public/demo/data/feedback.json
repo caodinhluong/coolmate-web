@@ -1,0 +1,144 @@
+{
+    "data": [
+        {
+            "code": "FB001",
+            "product": "Áo thun cotton trắng basic",
+            "user": "Nguyễn Văn An",
+            "rating": 4,
+            "comment": "Áo mềm, mặc thoải mái nhưng hơi mỏng."
+        },
+        {
+            "code": "FB002",
+            "product": "Quần jeans ống suông xanh đậm",
+            "user": "Trần Thị Bình",
+            "rating": 5,
+            "comment": "Quần đẹp, vừa vặn, chất lượng tuyệt vời."
+        },
+        {
+            "code": "FB003",
+            "product": "Áo sơ mi kẻ sọc xanh",
+            "user": "Lê Văn Cường",
+            "rating": 3,
+            "comment": "Áo ổn, nhưng màu hơi khác so với hình."
+        },
+        {
+            "code": "FB004",
+            "product": "Váy maxi hoa nhí đỏ",
+            "user": "Phạm Thị Dung",
+            "rating": 5,
+            "comment": "Váy xinh, mặc lên rất tôn dáng!"
+        },
+        {
+            "code": "FB005",
+            "product": "Áo khoác parka lông vũ đen",
+            "user": "Hoàng Văn Em",
+            "rating": 4,
+            "comment": "Áo ấm, nhưng kích thước hơi rộng so với tôi."
+        },
+        {
+            "code": "FB006",
+            "product": "Quần short kaki be",
+            "user": "Nguyễn Thị Phượng",
+            "rating": 5,
+            "comment": "Quần mát, rất hợp để mặc mùa hè."
+        },
+        {
+            "code": "FB007",
+            "product": "Áo polo trơn xanh navy",
+            "user": "Trần Văn Giang",
+            "rating": 4,
+            "comment": "Áo lịch sự, chất vải tốt."
+        },
+        {
+            "code": "FB008",
+            "product": "Áo len cổ lọ xám",
+            "user": "Lê Thị Hồng",
+            "rating": 5,
+            "comment": "Áo ấm, màu đẹp, rất thích!"
+        },
+        {
+            "code": "FB009",
+            "product": "Chân váy xếp ly midi đen",
+            "user": "Phạm Văn Inh",
+            "rating": 3,
+            "comment": "Váy đẹp nhưng hơi ngắn so với tôi."
+        },
+        {
+            "code": "FB010",
+            "product": "Áo blazer dáng dài nâu",
+            "user": "Nguyễn Thị Kim",
+            "rating": 5,
+            "comment": "Áo sang trọng, rất đáng tiền."
+        },
+        {
+            "code": "FB011",
+            "product": "Quần tây ống rộng xám",
+            "user": "Trần Văn Long",
+            "rating": 4,
+            "comment": "Quần vừa vặn, mặc thoải mái."
+        },
+        {
+            "code": "FB012",
+            "product": "Áo hoodie oversized đỏ",
+            "user": "Lê Thị Mai",
+            "rating": 5,
+            "comment": "Áo trẻ trung, ấm áp, rất thích."
+        },
+        {
+            "code": "FB013",
+            "product": "Quần cargo xanh rêu",
+            "user": "Nguyễn Văn Nam",
+            "rating": 4,
+            "comment": "Quần tiện lợi, phong cách cá tính."
+        },
+        {
+            "code": "FB014",
+            "product": "Áo tank top thể thao trắng",
+            "user": "Phạm Thị Oanh",
+            "rating": 5,
+            "comment": "Áo mát, rất hợp để tập gym."
+        },
+        {
+            "code": "FB015",
+            "product": "Áo vest slim fit đen",
+            "user": "Hoàng Văn Phong",
+            "rating": 4,
+            "comment": "Áo lịch lãm, nhưng hơi chật ở vai."
+        },
+        {
+            "code": "FB016",
+            "product": "Quần legging tập yoga đen",
+            "user": "Trần Thị Quyên",
+            "rating": 5,
+            "comment": "Quần co giãn tốt, mặc rất thoải mái."
+        },
+        {
+            "code": "FB017",
+            "product": "Áo crop top tay ngắn vàng",
+            "user": "Lê Văn Sơn",
+            "rating": 3,
+            "comment": "Áo đẹp nhưng hơi ngắn."
+        },
+        {
+            "code": "FB018",
+            "product": "Jumpsuit denim xanh",
+            "user": "Nguyễn Thị Thảo",
+            "rating": 5,
+            "comment": "Jumpsuit thời thượng, mặc rất đẹp."
+        },
+        {
+            "code": "FB019",
+            "product": "Áo gió chống nước xanh lá",
+            "user": "Phạm Văn Tùng",
+            "rating": 4,
+            "comment": "Áo nhẹ, tiện dụng, nhưng màu hơi đậm."
+        },
+        {
+            "code": "FB020",
+            "product": "Áo dệt kim cổ tròn hồng",
+            "user": "Trần Thị Uyên",
+            "rating": 5,
+            "comment": "Áo mềm mại, ấm áp, rất dễ thương."
+        }
+    ]
+}
