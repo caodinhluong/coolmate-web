@@ -1,0 +1,7 @@
+.login-modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7); // Màu xám nhạt
+    backdrop-filter: blur(1px); 
+    -webkit-backdrop-filter: blur(4px); // Hỗ trợ cho các trình duyệt Webkit
+  }

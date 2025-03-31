@@ -1,0 +1,124 @@
+{
+    "data": [
+        {
+            "code": "SUP001",
+            "name": "Công ty TNHH May mặc Á Đông",
+            "address": "123 Đường Lê Lợi, Quận 1, TP. Hồ Chí Minh",
+            "phone": "0901234567"
+        },
+        {
+            "code": "SUP002",
+            "name": "Xưởng may Thanh Bình",
+            "address": "45 Ngõ 78, Đường Giải Phóng, Hà Nội",
+            "phone": "0987654321"
+        },
+        {
+            "code": "SUP003",
+            "name": "Công ty CP Dệt may Hòa Phát",
+            "address": "78 Đường Nguyễn Huệ, TP. Đà Nẵng",
+            "phone": "0912345678"
+        },
+        {
+            "code": "SUP004",
+            "name": "Nhà cung cấp Vải Minh Anh",
+            "address": "12 Đường Trần Phú, TP. Hải Phòng",
+            "phone": "0936789012"
+        },
+        {
+            "code": "SUP005",
+            "name": "Công ty May mặc Phương Nam",
+            "address": "56 Đường 3/2, Quận Ninh Kiều, TP. Cần Thơ",
+            "phone": "0978123456"
+        },
+        {
+            "code": "SUP006",
+            "name": "Xưởng may Hoàng Gia",
+            "address": "89 Đường Phạm Văn Đồng, TP. Thủ Đức, TP. HCM",
+            "phone": "0945678901"
+        },
+        {
+            "code": "SUP007",
+            "name": "Công ty TNHH Thời trang Ngọc Lan",
+            "address": "34 Đường Hùng Vương, TP. Huế",
+            "phone": "0918765432"
+        },
+        {
+            "code": "SUP008",
+            "name": "Nhà cung cấp Vải và Phụ liệu Tân Tiến",
+            "address": "67 Đường Lý Thường Kiệt, Quận Tân Bình, TP. HCM",
+            "phone": "0909876543"
+        },
+        {
+            "code": "SUP009",
+            "name": "Công ty May xuất khẩu Việt Hưng",
+            "address": "23 Đường Trường Chinh, TP. Vinh, Nghệ An",
+            "phone": "0933456789"
+        },
+        {
+            "code": "SUP010",
+            "name": "Xưởng may Thảo Nguyên",
+            "address": "45 Đường Nguyễn Trãi, TP. Biên Hòa, Đồng Nai",
+            "phone": "0981234567"
+        },
+        {
+            "code": "SUP011",
+            "name": "Công ty Dệt may Thành Công",
+            "address": "78 Đường CMT8, Quận 3, TP. HCM",
+            "phone": "0915678901"
+        },
+        {
+            "code": "SUP012",
+            "name": "Nhà cung cấp Phụ kiện Thời trang Minh Đức",
+            "address": "12 Đường Nguyễn Văn Cừ, TP. Hà Nội",
+            "phone": "0943216789"
+        },
+        {
+            "code": "SUP013",
+            "name": "Công ty TNHH May mặc Bình Minh",
+            "address": "56 Đường Lê Đại Hành, TP. Quy Nhơn, Bình Định",
+            "phone": "0902345678"
+        },
+        {
+            "code": "SUP014",
+            "name": "Xưởng may Gia Phát",
+            "address": "89 Đường Trần Hưng Đạo, TP. Vũng Tàu",
+            "phone": "0976543210"
+        },
+        {
+            "code": "SUP015",
+            "name": "Công ty CP Thời trang An Nhiên",
+            "address": "34 Đường Nguyễn Thị Minh Khai, TP. Đà Lạt",
+            "phone": "0914321876"
+        },
+        {
+            "code": "SUP016",
+            "name": "Nhà cung cấp Vải lụa Hà Đông",
+            "address": "67 Đường Quang Trung, Hà Đông, Hà Nội",
+            "phone": "0938765432"
+        },
+        {
+            "code": "SUP017",
+            "name": "Công ty May mặc Đại Lợi",
+            "address": "23 Đường Lê Văn Sỹ, Quận Phú Nhuận, TP. HCM",
+            "phone": "0985678901"
+        },
+        {
+            "code": "SUP018",
+            "name": "Xưởng may Tâm Anh",
+            "address": "45 Đường Nguyễn Đình Chiểu, TP. Nha Trang",
+            "phone": "0908765432"
+        },
+        {
+            "code": "SUP019",
+            "name": "Công ty TNHH Dệt may Hương Sen",
+            "address": "78 Đường Lê Hồng Phong, TP. Buôn Ma Thuột",
+            "phone": "0941234567"
+        },
+        {
+            "code": "SUP020",
+            "name": "Nhà cung cấp Thời trang Nam Phương",
+            "address": "12 Đường Hoàng Diệu, TP. Rạch Giá, Kiên Giang",
+            "phone": "0919876543"
+        }
+    ]
+}

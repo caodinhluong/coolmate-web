@@ -1,0 +1,124 @@
+{
+    "data": [
+        {
+            "code": "VCH001",
+            "discount": 50000,
+            "percent": 0,
+            "condition": "Đơn hàng từ 500,000 VNĐ trở lên"
+        },
+        {
+            "code": "VCH002",
+            "discount": 0,
+            "percent": 10,
+            "condition": "Áp dụng cho tất cả đơn hàng"
+        },
+        {
+            "code": "VCH003",
+            "discount": 100000,
+            "percent": 0,
+            "condition": "Đơn hàng từ 1,000,000 VNĐ trở lên"
+        },
+        {
+            "code": "VCH004",
+            "discount": 0,
+            "percent": 20,
+            "condition": "Đơn hàng từ 300,000 VNĐ trở lên"
+        },
+        {
+            "code": "VCH005",
+            "discount": 20000,
+            "percent": 0,
+            "condition": "Áp dụng cho sản phẩm áo thun"
+        },
+        {
+            "code": "VCH006",
+            "discount": 0,
+            "percent": 15,
+            "condition": "Đơn hàng từ 400,000 VNĐ trở lên"
+        },
+        {
+            "code": "VCH007",
+            "discount": 150000,
+            "percent": 0,
+            "condition": "Đơn hàng từ 1,500,000 VNĐ trở lên"
+        },
+        {
+            "code": "VCH008",
+            "discount": 0,
+            "percent": 25,
+            "condition": "Áp dụng cho sản phẩm váy"
+        },
+        {
+            "code": "VCH009",
+            "discount": 30000,
+            "percent": 0,
+            "condition": "Đơn hàng từ 200,000 VNĐ trở lên"
+        },
+        {
+            "code": "VCH010",
+            "discount": 0,
+            "percent": 30,
+            "condition": "Đơn hàng từ 800,000 VNĐ trở lên"
+        },
+        {
+            "code": "VCH011",
+            "discount": 70000,
+            "percent": 0,
+            "condition": "Áp dụng cho sản phẩm quần jeans"
+        },
+        {
+            "code": "VCH012",
+            "discount": 0,
+            "percent": 5,
+            "condition": "Đơn hàng từ 150,000 VNĐ trở lên"
+        },
+        {
+            "code": "VCH013",
+            "discount": 250000,
+            "percent": 0,
+            "condition": "Đơn hàng từ 2,000,000 VNĐ trở lên"
+        },
+        {
+            "code": "VCH014",
+            "discount": 0,
+            "percent": 50,
+            "condition": "Áp dụng cho đơn hàng đầu tiên"
+        },
+        {
+            "code": "VCH015",
+            "discount": 80000,
+            "percent": 0,
+            "condition": "Đơn hàng từ 600,000 VNĐ trở lên"
+        },
+        {
+            "code": "VCH016",
+            "discount": 0,
+            "percent": 12,
+            "condition": "Áp dụng cho sản phẩm áo khoác"
+        },
+        {
+            "code": "VCH017",
+            "discount": 120000,
+            "percent": 0,
+            "condition": "Đơn hàng từ 1,200,000 VNĐ trở lên"
+        },
+        {
+            "code": "VCH018",
+            "discount": 0,
+            "percent": 8,
+            "condition": "Đơn hàng từ 250,000 VNĐ trở lên"
+        },
+        {
+            "code": "VCH019",
+            "discount": 40000,
+            "percent": 0,
+            "condition": "Áp dụng cho sản phẩm quần short"
+        },
+        {
+            "code": "VCH020",
+            "discount": 0,
+            "percent": 40,
+            "condition": "Đơn hàng từ 1,000,000 VNĐ trở lên"
+        }
+    ]
+}

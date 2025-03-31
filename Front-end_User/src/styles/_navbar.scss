@@ -1,0 +1,57 @@
+.navbar {
+    display: flex;
+    flex-direction: column;
+    input {
+        &::placeholder {
+            font-family: "CriteriaCF", sans-serif;
+            font-weight: 600;
+            color: #afaaaa;
+        }
+    }
+  
+    .topbar {
+      color: #fff; // White text color
+      background-color: #737373; // Gray background for topbar
+  
+      .container {
+
+  
+        ul {
+          display: flex;
+          list-style: none;
+  
+          li {
+            display: flex;
+            align-items: center;
+  
+            span {
+              &.font-bold {
+                font-weight: 700;
+              }
+              &.font-extrabold {
+                font-weight: 800;
+              }
+              &.divider {
+                color: #fff;
+                font-size: 1rem;
+                
+                align-items: center; 
+                justify-content: center;
+              }
+            }
+          }
+        }
+      }
+    }
+  
+    .bottombar {
+      color: #fff; // White text color
+      background-color: #525252;
+      font-weight: 500;
+  
+      .container {
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
+  }
