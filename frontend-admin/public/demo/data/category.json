@@ -1,0 +1,129 @@
+{
+    "data": [
+        {
+            "code": "TSH",
+            "name": "Áo thun",
+            "description": "Áo thun cotton thoải mái, phù hợp cho mọi dịp hàng ngày."
+        },
+        {
+            "code": "JEA",
+            "name": "Quần jeans",
+            "description": "Quần jeans thời trang, bền bỉ, dễ phối đồ."
+        },
+        {
+            "code": "SHT",
+            "name": "Áo sơ mi",
+            "description": "Áo sơ mi thanh lịch, phù hợp cho công sở và sự kiện."
+        },
+        {
+            "code": "DR",
+            "name": "Váy",
+            "description": "Váy thời trang dành cho phái nữ, đa dạng phong cách."
+        },
+        {
+            "code": "JAC",
+            "name": "Áo khoác",
+            "description": "Áo khoác ấm áp, phong cách, phù hợp với thời tiết lạnh."
+        },
+        {
+            "code": "SHO",
+            "name": "Quần short",
+            "description": "Quần short thoáng mát, năng động cho ngày hè."
+        },
+        {
+            "code": "POL",
+            "name": "Áo polo",
+            "description": "Áo polo lịch sự, kết hợp giữa thoải mái và trang trọng."
+        },
+        {
+            "code": "SWT",
+            "name": "Áo len",
+            "description": "Áo len ấm áp, mềm mại cho mùa đông."
+        },
+        {
+            "code": "SKT",
+            "name": "Chân váy",
+            "description": "Chân váy nữ tính, dễ phối với nhiều loại áo."
+        },
+        {
+            "code": "BLA",
+            "name": "Áo blazer",
+            "description": "Áo blazer sang trọng, phù hợp cho công việc và sự kiện."
+        },
+        {
+            "code": "TRK",
+            "name": "Quần tây",
+            "description": "Quần tây thanh lịch, dành cho phong cách công sở."
+        },
+        {
+            "code": "HOD",
+            "name": "Áo hoodie",
+            "description": "Áo hoodie trẻ trung, ấm áp, phong cách đường phố."
+        },
+        {
+            "code": "CAR",
+            "name": "Quần cargo",
+            "description": "Quần cargo tiện lợi với nhiều túi, phong cách cá tính."
+        },
+        {
+            "code": "TNK",
+            "name": "Áo tank top",
+            "description": "Áo tank top mát mẻ, phù hợp cho thể thao hoặc ngày nóng."
+        },
+        {
+            "code": "VST",
+            "name": "Áo vest",
+            "description": "Áo vest lịch lãm, dành cho các dịp trang trọng."
+        },
+        {
+            "code": "LEG",
+            "name": "Quần legging",
+            "description": "Quần legging co giãn, thoải mái cho tập luyện hoặc mặc hàng ngày."
+        },
+        {
+            "code": "CRP",
+            "name": "Áo crop top",
+            "description": "Áo crop top trẻ trung, năng động, dễ phối đồ."
+        },
+        {
+            "code": "OVE",
+            "name": "Đồ liền thân",
+            "description": "Đồ liền thân thời trang, tiện lợi và nổi bật."
+        },
+        {
+            "code": "WIN",
+            "name": "Áo gió",
+            "description": "Áo gió nhẹ, chống nước, phù hợp cho thời tiết ẩm ướt."
+        },
+        {
+            "code": "KNT",
+            "name": "Đồ dệt kim",
+            "description": "Đồ dệt kim mềm mại, ấm áp, phong cách cổ điển."
+        },
+        {
+            "code": "DEN",
+            "name": "Đồ denim",
+            "description": "Đồ denim bền bỉ, phong cách mạnh mẽ và hiện đại."
+        },
+        {
+            "code": "SPT",
+            "name": "Đồ thể thao",
+            "description": "Đồ thể thao thoáng khí, hỗ trợ vận động tối ưu."
+        },
+        {
+            "code": "TUX",
+            "name": "Áo tuxedo",
+            "description": "Áo tuxedo sang trọng, dành cho các sự kiện cao cấp."
+        },
+        {
+            "code": "JMP",
+            "name": "Áo jumpsuit",
+            "description": "Áo jumpsuit thời thượng, phù hợp cho nhiều phong cách."
+        },
+        {
+            "code": "BTH",
+            "name": "Đồ bơi",
+            "description": "Đồ bơi đa dạng kiểu dáng, dành cho mùa hè và bãi biển."
+        }
+    ]
+}
