@@ -1,4 +1,4 @@
-import { getAllOrder_details, getOrder_detailsById, createOrder_details, updateOrder_details, deleteOrder_details } from '../services/order_details.service.js';
+import { getAllOrder_details, getAllOrder_detailsWithoutPagination, getOrder_detailsById, createOrder_details, updateOrder_details, deleteOrder_details } from '../services/order_details.service.js';
 import logger from '../common/logger.js';
 
 export const getAll = async (req, res) => {
@@ -9,6 +9,22 @@ export const getAll = async (req, res) => {
 		res.status(200).json({ data, meta: { limit: parseInt(limit), page: parseInt(page), total } });
 	} catch (error) {
 		logger.error(`Get all order_details failed: ${error.message}`, { query: req.query, stack: error.stack });
+		if (error.message === 'Database error: ER_NO_SUCH_TABLE') {
+			res.status(400).json({ message: 'Table order_details does not exist' });
+		} else if (error.message.includes('Database error')) {
+			res.status(500).json({ message: 'Database error occurred' });
+		} else {
+			res.status(500).json({ message: `Error fetching order_details: ${error.message}` });
+		}
+	}
+};
+
+export const getAllWithoutPagination = async (req, res) => {
+	try {
+		const data = await getAllOrder_detailsWithoutPagination();
+		res.status(200).json({ data });
+	} catch (error) {
+		logger.error(`Get all order_details without pagination failed: ${error.message}`, { stack: error.stack });
 		if (error.message === 'Database error: ER_NO_SUCH_TABLE') {
 			res.status(400).json({ message: 'Table order_details does not exist' });
 		} else if (error.message.includes('Database error')) {

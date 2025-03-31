@@ -13,6 +13,16 @@ export const getAllInventory = async ({ limit = 10, offset = 0 } = {}) => {
 	}
 };
 
+export const getAllInventoryWithoutPagination = async () => {
+	try {
+		const [data] = await Inventory.getAllWithoutPagination();
+		return data;
+	} catch (error) {
+		logger.error(`Get all inventory without pagination failed: ${error.message}`, { stack: error.stack });
+		throw error;
+	}
+};
+
 export const getInventoryById = async (id) => {
 	try {
 		const [rows] = await Inventory.getById(id);

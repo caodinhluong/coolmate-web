@@ -13,6 +13,16 @@ export const getAllOrder_details = async ({ limit = 10, offset = 0 } = {}) => {
 	}
 };
 
+export const getAllOrder_detailsWithoutPagination = async () => {
+	try {
+		const [data] = await Order_details.getAllWithoutPagination();
+		return data;
+	} catch (error) {
+		logger.error(`Get all order_details without pagination failed: ${error.message}`, { stack: error.stack });
+		throw error;
+	}
+};
+
 export const getOrder_detailsById = async (id) => {
 	try {
 		const [rows] = await Order_details.getById(id);

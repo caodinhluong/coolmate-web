@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAll, getById, insert, update, deleteorders } from '../controllers/orders.controller.js';
+import { getAll, getAllWithoutPagination, getById, insert, update, deleteorders } from '../controllers/orders.controller.js';
 import { body, param, validationResult } from 'express-validator';
 import { verifyAdmin } from '../middleware/authMiddleware.js';
 import validationConfig from '../common/validationConfig.js';
@@ -29,6 +29,7 @@ const ordersValidation = validationConfig['orders'] || [
 	body('updated_at').optional(),
 ];
 const getAllMiddleware = routeConfig['orders'].getAll === 'admin' ? [verifyAdmin] : [];
+const getAllWithoutPaginationMiddleware = routeConfig['orders'].getAllWithoutPagination === 'admin' ? [verifyAdmin] : [];
 const getByIdMiddleware = routeConfig['orders'].getById === 'admin' ? [verifyAdmin] : [];
 const insertMiddleware = routeConfig['orders'].insert === 'admin' ? [verifyAdmin] : [];
 const updateMiddleware = routeConfig['orders'].update === 'admin' ? [verifyAdmin] : [];
@@ -37,7 +38,7 @@ const deleteMiddleware = routeConfig['orders'].delete === 'admin' ? [verifyAdmin
  * @swagger
  * /api/v1/orders:
  *   get:
- *     summary: Retrieve a list of orders
+ *     summary: Retrieve a paginated list of orders
  *     description: Fetches a paginated list of orders from the database.
  *     tags: [Orders]
  *     security:
@@ -57,7 +58,7 @@ const deleteMiddleware = routeConfig['orders'].delete === 'admin' ? [verifyAdmin
  *         description: Page number for pagination
  *     responses:
  *       200:
- *         description: A list of orders
+ *         description: A paginated list of orders
  *         content:
  *           application/json:
  *             schema:
@@ -107,6 +108,59 @@ const deleteMiddleware = routeConfig['orders'].delete === 'admin' ? [verifyAdmin
  *         description: Server error
  */
 router.get('/', [...getAllMiddleware], getAll);
+
+/**
+ * @swagger
+ * /api/v1/orders/all:
+ *   get:
+ *     summary: Retrieve all orders without pagination
+ *     description: Fetches all orders from the database without pagination.
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: A list of all orders
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       order_id:
+ *                         type: number
+ *                       customer_id:
+ *                         type: number
+ *                       staff_id:
+ *                         type: number
+ *                       total_amount:
+ *                         type: number
+ *                       order_status:
+ *                         type: string
+ *                       shipping_method_id:
+ *                         type: number
+ *                       shipping_address:
+ *                         type: string
+ *                       method_id:
+ *                         type: number
+ *                       payment_status:
+ *                         type: string
+ *                       created_at:
+ *                         type: string
+ *                       updated_at:
+ *                         type: string
+ *       400:
+ *         description: Bad request
+ *       403:
+ *         description: Forbidden - Admin access required
+ *       500:
+ *         description: Server error
+ */
+router.get('/all', [...getAllWithoutPaginationMiddleware], getAllWithoutPagination);
 
 /**
  * @swagger
@@ -168,217 +222,7 @@ router.get('/', [...getAllMiddleware], getAll);
  */
 router.get('/:id', [...getByIdMiddleware, param('id').notEmpty().withMessage('ID is required').isInt().withMessage('ID must be an integer')], validate, getById);
 
-/**
- * @swagger
- * /api/v1/orders:
- *   post:
- *     summary: Create a new orders
- *     description: Creates a new orders.
- *     tags: [Orders]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - order_id
- *             properties:
- *               order_id:
- *                 type: number
- *                 description: The order_id of the orders
- *               customer_id:
- *                 type: number
- *                 description: The customer_id of the orders
- *               staff_id:
- *                 type: number
- *                 description: The staff_id of the orders
- *               total_amount:
- *                 type: number
- *                 description: The total_amount of the orders
- *               order_status:
- *                 type: string
- *                 description: The order_status of the orders
- *               shipping_method_id:
- *                 type: number
- *                 description: The shipping_method_id of the orders
- *               shipping_address:
- *                 type: string
- *                 description: The shipping_address of the orders
- *               method_id:
- *                 type: number
- *                 description: The method_id of the orders
- *               payment_status:
- *                 type: string
- *                 description: The payment_status of the orders
- *               created_at:
- *                 type: string
- *                 description: The created_at of the orders
- *               updated_at:
- *                 type: string
- *                 description: The updated_at of the orders
- *     responses:
- *       201:
- *         description: Orders created
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 data:
- *                   type: object
- *                   properties:
- *                     order_id:
- *                       type: number
- *                     customer_id:
- *                       type: number
- *                     staff_id:
- *                       type: number
- *                     total_amount:
- *                       type: number
- *                     order_status:
- *                       type: string
- *                     shipping_method_id:
- *                       type: number
- *                     shipping_address:
- *                       type: string
- *                     method_id:
- *                       type: number
- *                     payment_status:
- *                       type: string
- *                     created_at:
- *                       type: string
- *                     updated_at:
- *                       type: string
- *       400:
- *         description: Validation error or data empty
- *       403:
- *         description: Forbidden - Admin access required
- *       409:
- *         description: Orders already exists
- *       500:
- *         description: Server error
- */
 router.post('/', [...insertMiddleware, ...ordersValidation], validate, insert);
-
-/**
- * @swagger
- * /api/v1/orders/{id}:
- *   put:
- *     summary: Update a orders by ID
- *     description: Updates an existing orders.
- *     tags: [Orders]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: The orders ID
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - order_id
- *             properties:
- *               order_id:
- *                 type: number
- *                 description: The order_id of the orders
- *               customer_id:
- *                 type: number
- *                 description: The customer_id of the orders
- *               staff_id:
- *                 type: number
- *                 description: The staff_id of the orders
- *               total_amount:
- *                 type: number
- *                 description: The total_amount of the orders
- *               order_status:
- *                 type: string
- *                 description: The order_status of the orders
- *               shipping_method_id:
- *                 type: number
- *                 description: The shipping_method_id of the orders
- *               shipping_address:
- *                 type: string
- *                 description: The shipping_address of the orders
- *               method_id:
- *                 type: number
- *                 description: The method_id of the orders
- *               payment_status:
- *                 type: string
- *                 description: The payment_status of the orders
- *               created_at:
- *                 type: string
- *                 description: The created_at of the orders
- *               updated_at:
- *                 type: string
- *                 description: The updated_at of the orders
- *     responses:
- *       200:
- *         description: Orders updated
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Updated successfully
- *       400:
- *         description: Validation error or data empty
- *       403:
- *         description: Forbidden - Admin access required
- *       404:
- *         description: Orders not found
- *       500:
- *         description: Server error
- */
 router.put('/:id', [...updateMiddleware, param('id').notEmpty().withMessage('ID is required').isInt().withMessage('ID must be an integer'), ...ordersValidation], validate, update);
-
-/**
- * @swagger
- * /api/v1/orders/{id}:
- *   delete:
- *     summary: Delete a orders by ID
- *     description: Deletes a orders by its ID.
- *     tags: [Orders]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: The orders ID
- *     responses:
- *       200:
- *         description: Orders deleted
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Deleted successfully
- *       400:
- *         description: Invalid ID format
- *       403:
- *         description: Forbidden - Admin access required
- *       404:
- *         description: Orders not found
- *       500:
- *         description: Server error
- */
 router.delete('/:id', [...deleteMiddleware, param('id').notEmpty().withMessage('ID is required').isInt().withMessage('ID must be an integer')], validate, deleteorders);
-
 export default router;

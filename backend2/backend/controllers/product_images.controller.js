@@ -1,4 +1,4 @@
-import { getAllProduct_images, getProduct_imagesById, createProduct_images, updateProduct_images, deleteProduct_images } from '../services/product_images.service.js';
+import { getAllProduct_images, getAllProduct_imagesWithoutPagination, getProduct_imagesById, createProduct_images, updateProduct_images, deleteProduct_images } from '../services/product_images.service.js';
 import logger from '../common/logger.js';
 
 export const getAll = async (req, res) => {
@@ -9,6 +9,22 @@ export const getAll = async (req, res) => {
 		res.status(200).json({ data, meta: { limit: parseInt(limit), page: parseInt(page), total } });
 	} catch (error) {
 		logger.error(`Get all product_images failed: ${error.message}`, { query: req.query, stack: error.stack });
+		if (error.message === 'Database error: ER_NO_SUCH_TABLE') {
+			res.status(400).json({ message: 'Table product_images does not exist' });
+		} else if (error.message.includes('Database error')) {
+			res.status(500).json({ message: 'Database error occurred' });
+		} else {
+			res.status(500).json({ message: `Error fetching product_images: ${error.message}` });
+		}
+	}
+};
+
+export const getAllWithoutPagination = async (req, res) => {
+	try {
+		const data = await getAllProduct_imagesWithoutPagination();
+		res.status(200).json({ data });
+	} catch (error) {
+		logger.error(`Get all product_images without pagination failed: ${error.message}`, { stack: error.stack });
 		if (error.message === 'Database error: ER_NO_SUCH_TABLE') {
 			res.status(400).json({ message: 'Table product_images does not exist' });
 		} else if (error.message.includes('Database error')) {

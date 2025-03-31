@@ -13,6 +13,16 @@ export const getAllCategories = async ({ limit = 10, offset = 0 } = {}) => {
 	}
 };
 
+export const getAllCategoriesWithoutPagination = async () => {
+	try {
+		const [data] = await Categories.getAllWithoutPagination();
+		return data;
+	} catch (error) {
+		logger.error(`Get all categories without pagination failed: ${error.message}`, { stack: error.stack });
+		throw error;
+	}
+};
+
 export const getCategoriesById = async (id) => {
 	try {
 		const [rows] = await Categories.getById(id);

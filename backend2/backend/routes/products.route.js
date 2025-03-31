@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAll, getById, insert, update, deleteproducts } from '../controllers/products.controller.js';
+import { getAll, getAllWithoutPagination, getById, insert, update, deleteproducts } from '../controllers/products.controller.js';
 import { body, param, validationResult } from 'express-validator';
 import { verifyAdmin } from '../middleware/authMiddleware.js';
 import validationConfig from '../common/validationConfig.js';
@@ -27,6 +27,7 @@ const productsValidation = validationConfig['products'] || [
 	body('updated_at').optional(),
 ];
 const getAllMiddleware = routeConfig['products'].getAll === 'admin' ? [verifyAdmin] : [];
+const getAllWithoutPaginationMiddleware = routeConfig['products'].getAllWithoutPagination === 'admin' ? [verifyAdmin] : [];
 const getByIdMiddleware = routeConfig['products'].getById === 'admin' ? [verifyAdmin] : [];
 const insertMiddleware = routeConfig['products'].insert === 'admin' ? [verifyAdmin] : [];
 const updateMiddleware = routeConfig['products'].update === 'admin' ? [verifyAdmin] : [];
@@ -35,7 +36,7 @@ const deleteMiddleware = routeConfig['products'].delete === 'admin' ? [verifyAdm
  * @swagger
  * /api/v1/products:
  *   get:
- *     summary: Retrieve a list of products
+ *     summary: Retrieve a paginated list of products
  *     description: Fetches a paginated list of products from the database.
  *     tags: [Products]
  *     security:
@@ -55,7 +56,7 @@ const deleteMiddleware = routeConfig['products'].delete === 'admin' ? [verifyAdm
  *         description: Page number for pagination
  *     responses:
  *       200:
- *         description: A list of products
+ *         description: A paginated list of products
  *         content:
  *           application/json:
  *             schema:
@@ -101,6 +102,55 @@ const deleteMiddleware = routeConfig['products'].delete === 'admin' ? [verifyAdm
  *         description: Server error
  */
 router.get('/', [...getAllMiddleware], getAll);
+
+/**
+ * @swagger
+ * /api/v1/products/all:
+ *   get:
+ *     summary: Retrieve all products without pagination
+ *     description: Fetches all products from the database without pagination.
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: A list of all products
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       product_id:
+ *                         type: number
+ *                       product_name:
+ *                         type: string
+ *                       brand_id:
+ *                         type: number
+ *                       category_id:
+ *                         type: number
+ *                       price:
+ *                         type: number
+ *                       discount_price:
+ *                         type: number
+ *                       description:
+ *                         type: string
+ *                       created_at:
+ *                         type: string
+ *                       updated_at:
+ *                         type: string
+ *       400:
+ *         description: Bad request
+ *       403:
+ *         description: Forbidden - Admin access required
+ *       500:
+ *         description: Server error
+ */
+router.get('/all', [...getAllWithoutPaginationMiddleware], getAllWithoutPagination);
 
 /**
  * @swagger
@@ -158,201 +208,7 @@ router.get('/', [...getAllMiddleware], getAll);
  */
 router.get('/:id', [...getByIdMiddleware, param('id').notEmpty().withMessage('ID is required').isInt().withMessage('ID must be an integer')], validate, getById);
 
-/**
- * @swagger
- * /api/v1/products:
- *   post:
- *     summary: Create a new products
- *     description: Creates a new products.
- *     tags: [Products]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - product_id
- *             properties:
- *               product_id:
- *                 type: number
- *                 description: The product_id of the products
- *               product_name:
- *                 type: string
- *                 description: The product_name of the products
- *               brand_id:
- *                 type: number
- *                 description: The brand_id of the products
- *               category_id:
- *                 type: number
- *                 description: The category_id of the products
- *               price:
- *                 type: number
- *                 description: The price of the products
- *               discount_price:
- *                 type: number
- *                 description: The discount_price of the products
- *               description:
- *                 type: string
- *                 description: The description of the products
- *               created_at:
- *                 type: string
- *                 description: The created_at of the products
- *               updated_at:
- *                 type: string
- *                 description: The updated_at of the products
- *     responses:
- *       201:
- *         description: Products created
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 data:
- *                   type: object
- *                   properties:
- *                     product_id:
- *                       type: number
- *                     product_name:
- *                       type: string
- *                     brand_id:
- *                       type: number
- *                     category_id:
- *                       type: number
- *                     price:
- *                       type: number
- *                     discount_price:
- *                       type: number
- *                     description:
- *                       type: string
- *                     created_at:
- *                       type: string
- *                     updated_at:
- *                       type: string
- *       400:
- *         description: Validation error or data empty
- *       403:
- *         description: Forbidden - Admin access required
- *       409:
- *         description: Products already exists
- *       500:
- *         description: Server error
- */
 router.post('/', [...insertMiddleware, ...productsValidation], validate, insert);
-
-/**
- * @swagger
- * /api/v1/products/{id}:
- *   put:
- *     summary: Update a products by ID
- *     description: Updates an existing products.
- *     tags: [Products]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: The products ID
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - product_id
- *             properties:
- *               product_id:
- *                 type: number
- *                 description: The product_id of the products
- *               product_name:
- *                 type: string
- *                 description: The product_name of the products
- *               brand_id:
- *                 type: number
- *                 description: The brand_id of the products
- *               category_id:
- *                 type: number
- *                 description: The category_id of the products
- *               price:
- *                 type: number
- *                 description: The price of the products
- *               discount_price:
- *                 type: number
- *                 description: The discount_price of the products
- *               description:
- *                 type: string
- *                 description: The description of the products
- *               created_at:
- *                 type: string
- *                 description: The created_at of the products
- *               updated_at:
- *                 type: string
- *                 description: The updated_at of the products
- *     responses:
- *       200:
- *         description: Products updated
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Updated successfully
- *       400:
- *         description: Validation error or data empty
- *       403:
- *         description: Forbidden - Admin access required
- *       404:
- *         description: Products not found
- *       500:
- *         description: Server error
- */
 router.put('/:id', [...updateMiddleware, param('id').notEmpty().withMessage('ID is required').isInt().withMessage('ID must be an integer'), ...productsValidation], validate, update);
-
-/**
- * @swagger
- * /api/v1/products/{id}:
- *   delete:
- *     summary: Delete a products by ID
- *     description: Deletes a products by its ID.
- *     tags: [Products]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: The products ID
- *     responses:
- *       200:
- *         description: Products deleted
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Deleted successfully
- *       400:
- *         description: Invalid ID format
- *       403:
- *         description: Forbidden - Admin access required
- *       404:
- *         description: Products not found
- *       500:
- *         description: Server error
- */
 router.delete('/:id', [...deleteMiddleware, param('id').notEmpty().withMessage('ID is required').isInt().withMessage('ID must be an integer')], validate, deleteproducts);
-
 export default router;

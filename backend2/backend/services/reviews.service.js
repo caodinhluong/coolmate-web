@@ -13,6 +13,16 @@ export const getAllReviews = async ({ limit = 10, offset = 0 } = {}) => {
 	}
 };
 
+export const getAllReviewsWithoutPagination = async () => {
+	try {
+		const [data] = await Reviews.getAllWithoutPagination();
+		return data;
+	} catch (error) {
+		logger.error(`Get all reviews without pagination failed: ${error.message}`, { stack: error.stack });
+		throw error;
+	}
+};
+
 export const getReviewsById = async (id) => {
 	try {
 		const [rows] = await Reviews.getById(id);

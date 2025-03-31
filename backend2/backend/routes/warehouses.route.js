@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAll, getById, insert, update, deletewarehouses } from '../controllers/warehouses.controller.js';
+import { getAll, getAllWithoutPagination, getById, insert, update, deletewarehouses } from '../controllers/warehouses.controller.js';
 import { body, param, validationResult } from 'express-validator';
 import { verifyAdmin } from '../middleware/authMiddleware.js';
 import validationConfig from '../common/validationConfig.js';
@@ -22,6 +22,7 @@ const warehousesValidation = validationConfig['warehouses'] || [
 	body('created_at').optional(),
 ];
 const getAllMiddleware = routeConfig['warehouses'].getAll === 'admin' ? [verifyAdmin] : [];
+const getAllWithoutPaginationMiddleware = routeConfig['warehouses'].getAllWithoutPagination === 'admin' ? [verifyAdmin] : [];
 const getByIdMiddleware = routeConfig['warehouses'].getById === 'admin' ? [verifyAdmin] : [];
 const insertMiddleware = routeConfig['warehouses'].insert === 'admin' ? [verifyAdmin] : [];
 const updateMiddleware = routeConfig['warehouses'].update === 'admin' ? [verifyAdmin] : [];
@@ -30,7 +31,7 @@ const deleteMiddleware = routeConfig['warehouses'].delete === 'admin' ? [verifyA
  * @swagger
  * /api/v1/warehouses:
  *   get:
- *     summary: Retrieve a list of warehouses
+ *     summary: Retrieve a paginated list of warehouses
  *     description: Fetches a paginated list of warehouses from the database.
  *     tags: [Warehouses]
  *     security:
@@ -50,7 +51,7 @@ const deleteMiddleware = routeConfig['warehouses'].delete === 'admin' ? [verifyA
  *         description: Page number for pagination
  *     responses:
  *       200:
- *         description: A list of warehouses
+ *         description: A paginated list of warehouses
  *         content:
  *           application/json:
  *             schema:
@@ -86,6 +87,45 @@ const deleteMiddleware = routeConfig['warehouses'].delete === 'admin' ? [verifyA
  *         description: Server error
  */
 router.get('/', [...getAllMiddleware], getAll);
+
+/**
+ * @swagger
+ * /api/v1/warehouses/all:
+ *   get:
+ *     summary: Retrieve all warehouses without pagination
+ *     description: Fetches all warehouses from the database without pagination.
+ *     tags: [Warehouses]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: A list of all warehouses
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       warehouse_id:
+ *                         type: number
+ *                       warehouse_name:
+ *                         type: string
+ *                       location:
+ *                         type: string
+ *                       created_at:
+ *                         type: string
+ *       400:
+ *         description: Bad request
+ *       403:
+ *         description: Forbidden - Admin access required
+ *       500:
+ *         description: Server error
+ */
+router.get('/all', [...getAllWithoutPaginationMiddleware], getAllWithoutPagination);
 
 /**
  * @swagger
@@ -133,161 +173,7 @@ router.get('/', [...getAllMiddleware], getAll);
  */
 router.get('/:id', [...getByIdMiddleware, param('id').notEmpty().withMessage('ID is required').isInt().withMessage('ID must be an integer')], validate, getById);
 
-/**
- * @swagger
- * /api/v1/warehouses:
- *   post:
- *     summary: Create a new warehouses
- *     description: Creates a new warehouses.
- *     tags: [Warehouses]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - warehouse_id
- *             properties:
- *               warehouse_id:
- *                 type: number
- *                 description: The warehouse_id of the warehouses
- *               warehouse_name:
- *                 type: string
- *                 description: The warehouse_name of the warehouses
- *               location:
- *                 type: string
- *                 description: The location of the warehouses
- *               created_at:
- *                 type: string
- *                 description: The created_at of the warehouses
- *     responses:
- *       201:
- *         description: Warehouses created
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 data:
- *                   type: object
- *                   properties:
- *                     warehouse_id:
- *                       type: number
- *                     warehouse_name:
- *                       type: string
- *                     location:
- *                       type: string
- *                     created_at:
- *                       type: string
- *       400:
- *         description: Validation error or data empty
- *       403:
- *         description: Forbidden - Admin access required
- *       409:
- *         description: Warehouses already exists
- *       500:
- *         description: Server error
- */
 router.post('/', [...insertMiddleware, ...warehousesValidation], validate, insert);
-
-/**
- * @swagger
- * /api/v1/warehouses/{id}:
- *   put:
- *     summary: Update a warehouses by ID
- *     description: Updates an existing warehouses.
- *     tags: [Warehouses]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: The warehouses ID
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - warehouse_id
- *             properties:
- *               warehouse_id:
- *                 type: number
- *                 description: The warehouse_id of the warehouses
- *               warehouse_name:
- *                 type: string
- *                 description: The warehouse_name of the warehouses
- *               location:
- *                 type: string
- *                 description: The location of the warehouses
- *               created_at:
- *                 type: string
- *                 description: The created_at of the warehouses
- *     responses:
- *       200:
- *         description: Warehouses updated
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Updated successfully
- *       400:
- *         description: Validation error or data empty
- *       403:
- *         description: Forbidden - Admin access required
- *       404:
- *         description: Warehouses not found
- *       500:
- *         description: Server error
- */
 router.put('/:id', [...updateMiddleware, param('id').notEmpty().withMessage('ID is required').isInt().withMessage('ID must be an integer'), ...warehousesValidation], validate, update);
-
-/**
- * @swagger
- * /api/v1/warehouses/{id}:
- *   delete:
- *     summary: Delete a warehouses by ID
- *     description: Deletes a warehouses by its ID.
- *     tags: [Warehouses]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: The warehouses ID
- *     responses:
- *       200:
- *         description: Warehouses deleted
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Deleted successfully
- *       400:
- *         description: Invalid ID format
- *       403:
- *         description: Forbidden - Admin access required
- *       404:
- *         description: Warehouses not found
- *       500:
- *         description: Server error
- */
 router.delete('/:id', [...deleteMiddleware, param('id').notEmpty().withMessage('ID is required').isInt().withMessage('ID must be an integer')], validate, deletewarehouses);
-
 export default router;

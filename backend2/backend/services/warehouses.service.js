@@ -13,6 +13,16 @@ export const getAllWarehouses = async ({ limit = 10, offset = 0 } = {}) => {
 	}
 };
 
+export const getAllWarehousesWithoutPagination = async () => {
+	try {
+		const [data] = await Warehouses.getAllWithoutPagination();
+		return data;
+	} catch (error) {
+		logger.error(`Get all warehouses without pagination failed: ${error.message}`, { stack: error.stack });
+		throw error;
+	}
+};
+
 export const getWarehousesById = async (id) => {
 	try {
 		const [rows] = await Warehouses.getById(id);

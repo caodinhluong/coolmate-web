@@ -13,6 +13,16 @@ export const getAllPayment_methods = async ({ limit = 10, offset = 0 } = {}) => 
 	}
 };
 
+export const getAllPayment_methodsWithoutPagination = async () => {
+	try {
+		const [data] = await Payment_methods.getAllWithoutPagination();
+		return data;
+	} catch (error) {
+		logger.error(`Get all payment_methods without pagination failed: ${error.message}`, { stack: error.stack });
+		throw error;
+	}
+};
+
 export const getPayment_methodsById = async (id) => {
 	try {
 		const [rows] = await Payment_methods.getById(id);

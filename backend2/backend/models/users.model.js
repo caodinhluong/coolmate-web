@@ -18,9 +18,9 @@ class Users {
 	}
 
 	static async query(sql, params) {
-		try {{
+		try {
 			return await db.query(sql, params);
-		}} catch (error) {
+		} catch (error) {
 			logger.error(`Database query error: ${error.message}`, { sql, params, stack: error.stack });
 			throw new Error(`Database error: ${error.message}`);
 		}
@@ -28,34 +28,44 @@ class Users {
 
 	static async getAll({ limit = 10, offset = 0 } = {}) {
 		const sql = 'SELECT * FROM users LIMIT ? OFFSET ?';
-		const result = await this.query(sql, [limit, offset]);
+		const [result] = await this.query(sql, [limit, offset]);
+		return result;
+	}
+
+	static async getAllWithoutPagination() {
+		const sql = 'SELECT * FROM users';
+		const [result] = await this.query(sql);
 		return result;
 	}
 
 	static async getCount() {
 		const sql = 'SELECT COUNT(*) as total FROM users';
-		return await this.query(sql);
+		const [result] = await this.query(sql);
+		return result[0].total;
 	}
 
 	static async getById(id) {
 		const sql = 'SELECT * FROM users WHERE account_id = ?';
-		const result = await this.query(sql, [id]);
-		return result;
+		const [result] = await this.query(sql, [id]);
+		return result.length > 0 ? result[0] : null;
 	}
 
 	static async insert(users) {
 		const sql = 'INSERT INTO users SET ?';
-		return await this.query(sql, users);
+		const [result] = await this.query(sql, [users]);
+		return result;
 	}
 
 	static async update(id, users) {
 		const sql = 'UPDATE users SET ? WHERE account_id = ?';
-		return await this.query(sql, [users, id]);
+		const [result] = await this.query(sql, [users, id]);
+		return result;
 	}
 
 	static async delete(id) {
 		const sql = 'DELETE FROM users WHERE account_id = ?';
-		return await this.query(sql, [id]);
+		const [result] = await this.query(sql, [id]);
+		return result;
 	}
 }
 

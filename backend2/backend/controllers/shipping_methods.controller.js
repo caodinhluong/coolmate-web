@@ -1,4 +1,4 @@
-import { getAllShipping_methods, getShipping_methodsById, createShipping_methods, updateShipping_methods, deleteShipping_methods } from '../services/shipping_methods.service.js';
+import { getAllShipping_methods, getAllShipping_methodsWithoutPagination, getShipping_methodsById, createShipping_methods, updateShipping_methods, deleteShipping_methods } from '../services/shipping_methods.service.js';
 import logger from '../common/logger.js';
 
 export const getAll = async (req, res) => {
@@ -9,6 +9,22 @@ export const getAll = async (req, res) => {
 		res.status(200).json({ data, meta: { limit: parseInt(limit), page: parseInt(page), total } });
 	} catch (error) {
 		logger.error(`Get all shipping_methods failed: ${error.message}`, { query: req.query, stack: error.stack });
+		if (error.message === 'Database error: ER_NO_SUCH_TABLE') {
+			res.status(400).json({ message: 'Table shipping_methods does not exist' });
+		} else if (error.message.includes('Database error')) {
+			res.status(500).json({ message: 'Database error occurred' });
+		} else {
+			res.status(500).json({ message: `Error fetching shipping_methods: ${error.message}` });
+		}
+	}
+};
+
+export const getAllWithoutPagination = async (req, res) => {
+	try {
+		const data = await getAllShipping_methodsWithoutPagination();
+		res.status(200).json({ data });
+	} catch (error) {
+		logger.error(`Get all shipping_methods without pagination failed: ${error.message}`, { stack: error.stack });
 		if (error.message === 'Database error: ER_NO_SUCH_TABLE') {
 			res.status(400).json({ message: 'Table shipping_methods does not exist' });
 		} else if (error.message.includes('Database error')) {

@@ -12,9 +12,9 @@ class Order_details {
 	}
 
 	static async query(sql, params) {
-		try {{
+		try {
 			return await db.query(sql, params);
-		}} catch (error) {
+		} catch (error) {
 			logger.error(`Database query error: ${error.message}`, { sql, params, stack: error.stack });
 			throw new Error(`Database error: ${error.message}`);
 		}
@@ -22,34 +22,44 @@ class Order_details {
 
 	static async getAll({ limit = 10, offset = 0 } = {}) {
 		const sql = 'SELECT * FROM order_details LIMIT ? OFFSET ?';
-		const result = await this.query(sql, [limit, offset]);
+		const [result] = await this.query(sql, [limit, offset]);
+		return result;
+	}
+
+	static async getAllWithoutPagination() {
+		const sql = 'SELECT * FROM order_details';
+		const [result] = await this.query(sql);
 		return result;
 	}
 
 	static async getCount() {
 		const sql = 'SELECT COUNT(*) as total FROM order_details';
-		return await this.query(sql);
+		const [result] = await this.query(sql);
+		return result[0].total;
 	}
 
 	static async getById(id) {
 		const sql = 'SELECT * FROM order_details WHERE detail_id = ?';
-		const result = await this.query(sql, [id]);
-		return result;
+		const [result] = await this.query(sql, [id]);
+		return result.length > 0 ? result[0] : null;
 	}
 
 	static async insert(order_details) {
 		const sql = 'INSERT INTO order_details SET ?';
-		return await this.query(sql, order_details);
+		const [result] = await this.query(sql, [order_details]);
+		return result;
 	}
 
 	static async update(id, order_details) {
 		const sql = 'UPDATE order_details SET ? WHERE detail_id = ?';
-		return await this.query(sql, [order_details, id]);
+		const [result] = await this.query(sql, [order_details, id]);
+		return result;
 	}
 
 	static async delete(id) {
 		const sql = 'DELETE FROM order_details WHERE detail_id = ?';
-		return await this.query(sql, [id]);
+		const [result] = await this.query(sql, [id]);
+		return result;
 	}
 }
 

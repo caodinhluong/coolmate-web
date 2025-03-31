@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAll, getById, insert, update, deleteimport_invoices } from '../controllers/import_invoices.controller.js';
+import { getAll, getAllWithoutPagination, getById, insert, update, deleteimport_invoices } from '../controllers/import_invoices.controller.js';
 import { body, param, validationResult } from 'express-validator';
 import { verifyAdmin } from '../middleware/authMiddleware.js';
 import validationConfig from '../common/validationConfig.js';
@@ -25,6 +25,7 @@ const import_invoicesValidation = validationConfig['import_invoices'] || [
 	body('created_at').optional(),
 ];
 const getAllMiddleware = routeConfig['import_invoices'].getAll === 'admin' ? [verifyAdmin] : [];
+const getAllWithoutPaginationMiddleware = routeConfig['import_invoices'].getAllWithoutPagination === 'admin' ? [verifyAdmin] : [];
 const getByIdMiddleware = routeConfig['import_invoices'].getById === 'admin' ? [verifyAdmin] : [];
 const insertMiddleware = routeConfig['import_invoices'].insert === 'admin' ? [verifyAdmin] : [];
 const updateMiddleware = routeConfig['import_invoices'].update === 'admin' ? [verifyAdmin] : [];
@@ -33,7 +34,7 @@ const deleteMiddleware = routeConfig['import_invoices'].delete === 'admin' ? [ve
  * @swagger
  * /api/v1/import_invoices:
  *   get:
- *     summary: Retrieve a list of import_invoices
+ *     summary: Retrieve a paginated list of import_invoices
  *     description: Fetches a paginated list of import_invoices from the database.
  *     tags: [Import_invoices]
  *     security:
@@ -53,7 +54,7 @@ const deleteMiddleware = routeConfig['import_invoices'].delete === 'admin' ? [ve
  *         description: Page number for pagination
  *     responses:
  *       200:
- *         description: A list of import_invoices
+ *         description: A paginated list of import_invoices
  *         content:
  *           application/json:
  *             schema:
@@ -95,6 +96,51 @@ const deleteMiddleware = routeConfig['import_invoices'].delete === 'admin' ? [ve
  *         description: Server error
  */
 router.get('/', [...getAllMiddleware], getAll);
+
+/**
+ * @swagger
+ * /api/v1/import_invoices/all:
+ *   get:
+ *     summary: Retrieve all import_invoices without pagination
+ *     description: Fetches all import_invoices from the database without pagination.
+ *     tags: [Import_invoices]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: A list of all import_invoices
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       invoice_id:
+ *                         type: number
+ *                       supplier_id:
+ *                         type: number
+ *                       staff_id:
+ *                         type: number
+ *                       total_amount:
+ *                         type: number
+ *                       invoice_date:
+ *                         type: string
+ *                       warehouse_id:
+ *                         type: number
+ *                       created_at:
+ *                         type: string
+ *       400:
+ *         description: Bad request
+ *       403:
+ *         description: Forbidden - Admin access required
+ *       500:
+ *         description: Server error
+ */
+router.get('/all', [...getAllWithoutPaginationMiddleware], getAllWithoutPagination);
 
 /**
  * @swagger
@@ -148,185 +194,7 @@ router.get('/', [...getAllMiddleware], getAll);
  */
 router.get('/:id', [...getByIdMiddleware, param('id').notEmpty().withMessage('ID is required').isInt().withMessage('ID must be an integer')], validate, getById);
 
-/**
- * @swagger
- * /api/v1/import_invoices:
- *   post:
- *     summary: Create a new import_invoices
- *     description: Creates a new import_invoices.
- *     tags: [Import_invoices]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - invoice_id
- *             properties:
- *               invoice_id:
- *                 type: number
- *                 description: The invoice_id of the import_invoices
- *               supplier_id:
- *                 type: number
- *                 description: The supplier_id of the import_invoices
- *               staff_id:
- *                 type: number
- *                 description: The staff_id of the import_invoices
- *               total_amount:
- *                 type: number
- *                 description: The total_amount of the import_invoices
- *               invoice_date:
- *                 type: string
- *                 description: The invoice_date of the import_invoices
- *               warehouse_id:
- *                 type: number
- *                 description: The warehouse_id of the import_invoices
- *               created_at:
- *                 type: string
- *                 description: The created_at of the import_invoices
- *     responses:
- *       201:
- *         description: Import_invoices created
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 data:
- *                   type: object
- *                   properties:
- *                     invoice_id:
- *                       type: number
- *                     supplier_id:
- *                       type: number
- *                     staff_id:
- *                       type: number
- *                     total_amount:
- *                       type: number
- *                     invoice_date:
- *                       type: string
- *                     warehouse_id:
- *                       type: number
- *                     created_at:
- *                       type: string
- *       400:
- *         description: Validation error or data empty
- *       403:
- *         description: Forbidden - Admin access required
- *       409:
- *         description: Import_invoices already exists
- *       500:
- *         description: Server error
- */
 router.post('/', [...insertMiddleware, ...import_invoicesValidation], validate, insert);
-
-/**
- * @swagger
- * /api/v1/import_invoices/{id}:
- *   put:
- *     summary: Update a import_invoices by ID
- *     description: Updates an existing import_invoices.
- *     tags: [Import_invoices]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: The import_invoices ID
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - invoice_id
- *             properties:
- *               invoice_id:
- *                 type: number
- *                 description: The invoice_id of the import_invoices
- *               supplier_id:
- *                 type: number
- *                 description: The supplier_id of the import_invoices
- *               staff_id:
- *                 type: number
- *                 description: The staff_id of the import_invoices
- *               total_amount:
- *                 type: number
- *                 description: The total_amount of the import_invoices
- *               invoice_date:
- *                 type: string
- *                 description: The invoice_date of the import_invoices
- *               warehouse_id:
- *                 type: number
- *                 description: The warehouse_id of the import_invoices
- *               created_at:
- *                 type: string
- *                 description: The created_at of the import_invoices
- *     responses:
- *       200:
- *         description: Import_invoices updated
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Updated successfully
- *       400:
- *         description: Validation error or data empty
- *       403:
- *         description: Forbidden - Admin access required
- *       404:
- *         description: Import_invoices not found
- *       500:
- *         description: Server error
- */
 router.put('/:id', [...updateMiddleware, param('id').notEmpty().withMessage('ID is required').isInt().withMessage('ID must be an integer'), ...import_invoicesValidation], validate, update);
-
-/**
- * @swagger
- * /api/v1/import_invoices/{id}:
- *   delete:
- *     summary: Delete a import_invoices by ID
- *     description: Deletes a import_invoices by its ID.
- *     tags: [Import_invoices]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: The import_invoices ID
- *     responses:
- *       200:
- *         description: Import_invoices deleted
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Deleted successfully
- *       400:
- *         description: Invalid ID format
- *       403:
- *         description: Forbidden - Admin access required
- *       404:
- *         description: Import_invoices not found
- *       500:
- *         description: Server error
- */
 router.delete('/:id', [...deleteMiddleware, param('id').notEmpty().withMessage('ID is required').isInt().withMessage('ID must be an integer')], validate, deleteimport_invoices);
-
 export default router;

@@ -13,6 +13,16 @@ export const getAllProduct_sizes = async ({ limit = 10, offset = 0 } = {}) => {
 	}
 };
 
+export const getAllProduct_sizesWithoutPagination = async () => {
+	try {
+		const [data] = await Product_sizes.getAllWithoutPagination();
+		return data;
+	} catch (error) {
+		logger.error(`Get all product_sizes without pagination failed: ${error.message}`, { stack: error.stack });
+		throw error;
+	}
+};
+
 export const getProduct_sizesById = async (id) => {
 	try {
 		const [rows] = await Product_sizes.getById(id);

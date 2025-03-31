@@ -13,6 +13,16 @@ export const getAllUsers = async ({ limit = 10, offset = 0 } = {}) => {
 	}
 };
 
+export const getAllUsersWithoutPagination = async () => {
+	try {
+		const [data] = await Users.getAllWithoutPagination();
+		return data;
+	} catch (error) {
+		logger.error(`Get all users without pagination failed: ${error.message}`, { stack: error.stack });
+		throw error;
+	}
+};
+
 export const getUsersById = async (id) => {
 	try {
 		const [rows] = await Users.getById(id);

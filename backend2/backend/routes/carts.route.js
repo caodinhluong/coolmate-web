@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAll, getById, insert, update, deletecarts } from '../controllers/carts.controller.js';
+import { getAll, getAllWithoutPagination, getById, insert, update, deletecarts } from '../controllers/carts.controller.js';
 import { body, param, validationResult } from 'express-validator';
 import { verifyAdmin } from '../middleware/authMiddleware.js';
 import validationConfig from '../common/validationConfig.js';
@@ -22,6 +22,7 @@ const cartsValidation = validationConfig['carts'] || [
 	body('updated_at').optional(),
 ];
 const getAllMiddleware = routeConfig['carts'].getAll === 'admin' ? [verifyAdmin] : [];
+const getAllWithoutPaginationMiddleware = routeConfig['carts'].getAllWithoutPagination === 'admin' ? [verifyAdmin] : [];
 const getByIdMiddleware = routeConfig['carts'].getById === 'admin' ? [verifyAdmin] : [];
 const insertMiddleware = routeConfig['carts'].insert === 'admin' ? [verifyAdmin] : [];
 const updateMiddleware = routeConfig['carts'].update === 'admin' ? [verifyAdmin] : [];
@@ -30,7 +31,7 @@ const deleteMiddleware = routeConfig['carts'].delete === 'admin' ? [verifyAdmin]
  * @swagger
  * /api/v1/carts:
  *   get:
- *     summary: Retrieve a list of carts
+ *     summary: Retrieve a paginated list of carts
  *     description: Fetches a paginated list of carts from the database.
  *     tags: [Carts]
  *     security:
@@ -50,7 +51,7 @@ const deleteMiddleware = routeConfig['carts'].delete === 'admin' ? [verifyAdmin]
  *         description: Page number for pagination
  *     responses:
  *       200:
- *         description: A list of carts
+ *         description: A paginated list of carts
  *         content:
  *           application/json:
  *             schema:
@@ -86,6 +87,45 @@ const deleteMiddleware = routeConfig['carts'].delete === 'admin' ? [verifyAdmin]
  *         description: Server error
  */
 router.get('/', [...getAllMiddleware], getAll);
+
+/**
+ * @swagger
+ * /api/v1/carts/all:
+ *   get:
+ *     summary: Retrieve all carts without pagination
+ *     description: Fetches all carts from the database without pagination.
+ *     tags: [Carts]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: A list of all carts
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       cart_id:
+ *                         type: number
+ *                       customer_id:
+ *                         type: number
+ *                       created_at:
+ *                         type: string
+ *                       updated_at:
+ *                         type: string
+ *       400:
+ *         description: Bad request
+ *       403:
+ *         description: Forbidden - Admin access required
+ *       500:
+ *         description: Server error
+ */
+router.get('/all', [...getAllWithoutPaginationMiddleware], getAllWithoutPagination);
 
 /**
  * @swagger
@@ -133,161 +173,7 @@ router.get('/', [...getAllMiddleware], getAll);
  */
 router.get('/:id', [...getByIdMiddleware, param('id').notEmpty().withMessage('ID is required').isInt().withMessage('ID must be an integer')], validate, getById);
 
-/**
- * @swagger
- * /api/v1/carts:
- *   post:
- *     summary: Create a new carts
- *     description: Creates a new carts.
- *     tags: [Carts]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - cart_id
- *             properties:
- *               cart_id:
- *                 type: number
- *                 description: The cart_id of the carts
- *               customer_id:
- *                 type: number
- *                 description: The customer_id of the carts
- *               created_at:
- *                 type: string
- *                 description: The created_at of the carts
- *               updated_at:
- *                 type: string
- *                 description: The updated_at of the carts
- *     responses:
- *       201:
- *         description: Carts created
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 data:
- *                   type: object
- *                   properties:
- *                     cart_id:
- *                       type: number
- *                     customer_id:
- *                       type: number
- *                     created_at:
- *                       type: string
- *                     updated_at:
- *                       type: string
- *       400:
- *         description: Validation error or data empty
- *       403:
- *         description: Forbidden - Admin access required
- *       409:
- *         description: Carts already exists
- *       500:
- *         description: Server error
- */
 router.post('/', [...insertMiddleware, ...cartsValidation], validate, insert);
-
-/**
- * @swagger
- * /api/v1/carts/{id}:
- *   put:
- *     summary: Update a carts by ID
- *     description: Updates an existing carts.
- *     tags: [Carts]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: The carts ID
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - cart_id
- *             properties:
- *               cart_id:
- *                 type: number
- *                 description: The cart_id of the carts
- *               customer_id:
- *                 type: number
- *                 description: The customer_id of the carts
- *               created_at:
- *                 type: string
- *                 description: The created_at of the carts
- *               updated_at:
- *                 type: string
- *                 description: The updated_at of the carts
- *     responses:
- *       200:
- *         description: Carts updated
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Updated successfully
- *       400:
- *         description: Validation error or data empty
- *       403:
- *         description: Forbidden - Admin access required
- *       404:
- *         description: Carts not found
- *       500:
- *         description: Server error
- */
 router.put('/:id', [...updateMiddleware, param('id').notEmpty().withMessage('ID is required').isInt().withMessage('ID must be an integer'), ...cartsValidation], validate, update);
-
-/**
- * @swagger
- * /api/v1/carts/{id}:
- *   delete:
- *     summary: Delete a carts by ID
- *     description: Deletes a carts by its ID.
- *     tags: [Carts]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: The carts ID
- *     responses:
- *       200:
- *         description: Carts deleted
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Deleted successfully
- *       400:
- *         description: Invalid ID format
- *       403:
- *         description: Forbidden - Admin access required
- *       404:
- *         description: Carts not found
- *       500:
- *         description: Server error
- */
 router.delete('/:id', [...deleteMiddleware, param('id').notEmpty().withMessage('ID is required').isInt().withMessage('ID must be an integer')], validate, deletecarts);
-
 export default router;

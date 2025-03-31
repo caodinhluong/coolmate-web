@@ -13,6 +13,16 @@ export const getAllTransactions = async ({ limit = 10, offset = 0 } = {}) => {
 	}
 };
 
+export const getAllTransactionsWithoutPagination = async () => {
+	try {
+		const [data] = await Transactions.getAllWithoutPagination();
+		return data;
+	} catch (error) {
+		logger.error(`Get all transactions without pagination failed: ${error.message}`, { stack: error.stack });
+		throw error;
+	}
+};
+
 export const getTransactionsById = async (id) => {
 	try {
 		const [rows] = await Transactions.getById(id);

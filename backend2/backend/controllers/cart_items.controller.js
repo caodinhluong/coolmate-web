@@ -1,4 +1,4 @@
-import { getAllCart_items, getCart_itemsById, createCart_items, updateCart_items, deleteCart_items } from '../services/cart_items.service.js';
+import { getAllCart_items, getAllCart_itemsWithoutPagination, getCart_itemsById, createCart_items, updateCart_items, deleteCart_items } from '../services/cart_items.service.js';
 import logger from '../common/logger.js';
 
 export const getAll = async (req, res) => {
@@ -9,6 +9,22 @@ export const getAll = async (req, res) => {
 		res.status(200).json({ data, meta: { limit: parseInt(limit), page: parseInt(page), total } });
 	} catch (error) {
 		logger.error(`Get all cart_items failed: ${error.message}`, { query: req.query, stack: error.stack });
+		if (error.message === 'Database error: ER_NO_SUCH_TABLE') {
+			res.status(400).json({ message: 'Table cart_items does not exist' });
+		} else if (error.message.includes('Database error')) {
+			res.status(500).json({ message: 'Database error occurred' });
+		} else {
+			res.status(500).json({ message: `Error fetching cart_items: ${error.message}` });
+		}
+	}
+};
+
+export const getAllWithoutPagination = async (req, res) => {
+	try {
+		const data = await getAllCart_itemsWithoutPagination();
+		res.status(200).json({ data });
+	} catch (error) {
+		logger.error(`Get all cart_items without pagination failed: ${error.message}`, { stack: error.stack });
 		if (error.message === 'Database error: ER_NO_SUCH_TABLE') {
 			res.status(400).json({ message: 'Table cart_items does not exist' });
 		} else if (error.message.includes('Database error')) {

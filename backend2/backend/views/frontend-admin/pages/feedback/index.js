@@ -6,7 +6,7 @@ import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import { Button } from 'primereact/button';
 import React, { useEffect, useRef, useState } from 'react';
-import { FeedbackService } from '../../demo/service/FeedbackService';
+import { FeedbackService } from '../../service/FeedbackService';
 
 const Feedback = () => {
     const [feedbacks, setFeedbacks] = useState([]);

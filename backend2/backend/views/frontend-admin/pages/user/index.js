@@ -5,7 +5,7 @@ import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import React, { useEffect, useRef, useState } from 'react';
-import { UserService } from '../../demo/service/UserService';
+import { UserService } from '../../service/UserService';
 
 const User = () => {
     const [users, setUsers] = useState([]);

@@ -13,6 +13,16 @@ export const getAllSuppliers = async ({ limit = 10, offset = 0 } = {}) => {
 	}
 };
 
+export const getAllSuppliersWithoutPagination = async () => {
+	try {
+		const [data] = await Suppliers.getAllWithoutPagination();
+		return data;
+	} catch (error) {
+		logger.error(`Get all suppliers without pagination failed: ${error.message}`, { stack: error.stack });
+		throw error;
+	}
+};
+
 export const getSuppliersById = async (id) => {
 	try {
 		const [rows] = await Suppliers.getById(id);

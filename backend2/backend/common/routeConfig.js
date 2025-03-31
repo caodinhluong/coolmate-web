@@ -1,6 +1,7 @@
 const routeConfig = {
 	'brands': {
 		getAll: 'public',
+		getAllWithoutPagination: 'public',
 		getById: 'public',
 		insert: 'admin',
 		update: 'admin',
@@ -8,6 +9,7 @@ const routeConfig = {
 	},
 	'cart_items': {
 		getAll: 'public',
+		getAllWithoutPagination: 'public',
 		getById: 'public',
 		insert: 'admin',
 		update: 'admin',
@@ -15,6 +17,7 @@ const routeConfig = {
 	},
 	'carts': {
 		getAll: 'public',
+		getAllWithoutPagination: 'public',
 		getById: 'public',
 		insert: 'admin',
 		update: 'admin',
@@ -22,13 +25,15 @@ const routeConfig = {
 	},
 	'categories': {
 		getAll: 'public',
+		getAllWithoutPagination: 'public',
 		getById: 'public',
-		insert: 'admin',
+		insert: 'public',
 		update: 'admin',
 		delete: 'admin',
 	},
 	'customers': {
 		getAll: 'public',
+		getAllWithoutPagination: 'public',
 		getById: 'public',
 		insert: 'admin',
 		update: 'admin',
@@ -36,6 +41,7 @@ const routeConfig = {
 	},
 	'import_invoice_details': {
 		getAll: 'public',
+		getAllWithoutPagination: 'public',
 		getById: 'public',
 		insert: 'admin',
 		update: 'admin',
@@ -43,6 +49,7 @@ const routeConfig = {
 	},
 	'import_invoices': {
 		getAll: 'public',
+		getAllWithoutPagination: 'public',
 		getById: 'public',
 		insert: 'admin',
 		update: 'admin',
@@ -50,6 +57,7 @@ const routeConfig = {
 	},
 	'inventory': {
 		getAll: 'public',
+		getAllWithoutPagination: 'public',
 		getById: 'public',
 		insert: 'admin',
 		update: 'admin',
@@ -57,6 +65,7 @@ const routeConfig = {
 	},
 	'order_details': {
 		getAll: 'public',
+		getAllWithoutPagination: 'public',
 		getById: 'public',
 		insert: 'admin',
 		update: 'admin',
@@ -64,6 +73,7 @@ const routeConfig = {
 	},
 	'orders': {
 		getAll: 'public',
+		getAllWithoutPagination: 'public',
 		getById: 'public',
 		insert: 'admin',
 		update: 'admin',
@@ -71,6 +81,7 @@ const routeConfig = {
 	},
 	'payment_methods': {
 		getAll: 'public',
+		getAllWithoutPagination: 'public',
 		getById: 'public',
 		insert: 'admin',
 		update: 'admin',
@@ -78,6 +89,7 @@ const routeConfig = {
 	},
 	'product_images': {
 		getAll: 'public',
+		getAllWithoutPagination: 'public',
 		getById: 'public',
 		insert: 'admin',
 		update: 'admin',
@@ -85,6 +97,7 @@ const routeConfig = {
 	},
 	'product_promotions': {
 		getAll: 'public',
+		getAllWithoutPagination: 'public',
 		getById: 'public',
 		insert: 'admin',
 		update: 'admin',
@@ -92,6 +105,7 @@ const routeConfig = {
 	},
 	'product_sizes': {
 		getAll: 'public',
+		getAllWithoutPagination: 'public',
 		getById: 'public',
 		insert: 'admin',
 		update: 'admin',
@@ -99,6 +113,7 @@ const routeConfig = {
 	},
 	'products': {
 		getAll: 'public',
+		getAllWithoutPagination: 'public',
 		getById: 'public',
 		insert: 'admin',
 		update: 'admin',
@@ -106,6 +121,7 @@ const routeConfig = {
 	},
 	'promotions': {
 		getAll: 'public',
+		getAllWithoutPagination: 'public',
 		getById: 'public',
 		insert: 'admin',
 		update: 'admin',
@@ -113,6 +129,7 @@ const routeConfig = {
 	},
 	'reviews': {
 		getAll: 'public',
+		getAllWithoutPagination: 'public',
 		getById: 'public',
 		insert: 'admin',
 		update: 'admin',
@@ -120,6 +137,7 @@ const routeConfig = {
 	},
 	'shipping_methods': {
 		getAll: 'public',
+		getAllWithoutPagination: 'public',
 		getById: 'public',
 		insert: 'admin',
 		update: 'admin',
@@ -127,6 +145,7 @@ const routeConfig = {
 	},
 	'sizes': {
 		getAll: 'public',
+		getAllWithoutPagination: 'public',
 		getById: 'public',
 		insert: 'admin',
 		update: 'admin',
@@ -134,6 +153,7 @@ const routeConfig = {
 	},
 	'suppliers': {
 		getAll: 'public',
+		getAllWithoutPagination: 'public',
 		getById: 'public',
 		insert: 'admin',
 		update: 'admin',
@@ -141,6 +161,7 @@ const routeConfig = {
 	},
 	'transactions': {
 		getAll: 'public',
+		getAllWithoutPagination: 'public',
 		getById: 'public',
 		insert: 'admin',
 		update: 'admin',
@@ -148,6 +169,7 @@ const routeConfig = {
 	},
 	'users': {
 		getAll: 'public',
+		getAllWithoutPagination: 'public',
 		getById: 'public',
 		insert: 'admin',
 		update: 'admin',
@@ -155,6 +177,7 @@ const routeConfig = {
 	},
 	'warehouses': {
 		getAll: 'public',
+		getAllWithoutPagination: 'public',
 		getById: 'public',
 		insert: 'admin',
 		update: 'admin',

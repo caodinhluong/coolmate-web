@@ -13,6 +13,16 @@ export const getAllCarts = async ({ limit = 10, offset = 0 } = {}) => {
 	}
 };
 
+export const getAllCartsWithoutPagination = async () => {
+	try {
+		const [data] = await Carts.getAllWithoutPagination();
+		return data;
+	} catch (error) {
+		logger.error(`Get all carts without pagination failed: ${error.message}`, { stack: error.stack });
+		throw error;
+	}
+};
+
 export const getCartsById = async (id) => {
 	try {
 		const [rows] = await Carts.getById(id);

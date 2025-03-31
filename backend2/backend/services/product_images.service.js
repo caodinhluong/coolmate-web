@@ -13,6 +13,16 @@ export const getAllProduct_images = async ({ limit = 10, offset = 0 } = {}) => {
 	}
 };
 
+export const getAllProduct_imagesWithoutPagination = async () => {
+	try {
+		const [data] = await Product_images.getAllWithoutPagination();
+		return data;
+	} catch (error) {
+		logger.error(`Get all product_images without pagination failed: ${error.message}`, { stack: error.stack });
+		throw error;
+	}
+};
+
 export const getProduct_imagesById = async (id) => {
 	try {
 		const [rows] = await Product_images.getById(id);

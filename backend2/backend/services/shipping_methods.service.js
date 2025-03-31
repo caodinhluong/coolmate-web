@@ -13,6 +13,16 @@ export const getAllShipping_methods = async ({ limit = 10, offset = 0 } = {}) =>
 	}
 };
 
+export const getAllShipping_methodsWithoutPagination = async () => {
+	try {
+		const [data] = await Shipping_methods.getAllWithoutPagination();
+		return data;
+	} catch (error) {
+		logger.error(`Get all shipping_methods without pagination failed: ${error.message}`, { stack: error.stack });
+		throw error;
+	}
+};
+
 export const getShipping_methodsById = async (id) => {
 	try {
 		const [rows] = await Shipping_methods.getById(id);

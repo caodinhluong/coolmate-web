@@ -13,6 +13,16 @@ export const getAllImport_invoices = async ({ limit = 10, offset = 0 } = {}) => 
 	}
 };
 
+export const getAllImport_invoicesWithoutPagination = async () => {
+	try {
+		const [data] = await Import_invoices.getAllWithoutPagination();
+		return data;
+	} catch (error) {
+		logger.error(`Get all import_invoices without pagination failed: ${error.message}`, { stack: error.stack });
+		throw error;
+	}
+};
+
 export const getImport_invoicesById = async (id) => {
 	try {
 		const [rows] = await Import_invoices.getById(id);

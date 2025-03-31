@@ -12,13 +12,12 @@ import { CategoryService } from '../../service/CategoryService';
 
 const Category = () => {
     let emptyCategory = {
-        id: null,
-        name: '',
+        category_id: null,
+        category_name: '',
         description: '',
     };
 
     const [categories, setCategories] = useState([]);
-    const [totalRecords, setTotalRecords] = useState(0);
     const [categoryDialog, setCategoryDialog] = useState(false);
     const [deleteCategoryDialog, setDeleteCategoryDialog] = useState(false);
     const [deleteCategoriesDialog, setDeleteCategoriesDialog] = useState(false);
@@ -26,31 +25,24 @@ const Category = () => {
     const [selectedCategories, setSelectedCategories] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
-    const [lazyParams, setLazyParams] = useState({
-        first: 0,
-        rows: 10,
-        page: 1,
-    });
     const toast = useRef(null);
     const dt = useRef(null);
     const categoryService = new CategoryService();
 
     useEffect(() => {
         loadCategories();
-    }, [lazyParams]);
+    }, []); // Chỉ gọi một lần khi component mount
 
     const loadCategories = () => {
-        const { rows, page } = lazyParams;
         categoryService
-            .getCategories({ limit: rows, page })
-            .then((result) => {
-                console.log('Danh sách danh mục:', result);
-                setCategories(result.data);
-                setTotalRecords(result.meta.total);
+            .getAllCategories()
+            .then((data) => {
+                console.log('Danh sách danh mục:', data);
+                setCategories(data || []);
             })
             .catch((error) => {
                 console.error('Lỗi khi lấy danh sách:', error);
-                toast.current.show({ severity: 'error', summary: 'Lỗi', detail: 'Không thể tải danh sách', life: 3000 });
+                toast.current.show({ severity: 'error', summary: 'Lỗi', detail: 'Không thể tải danh sách danh mục', life: 3000 });
             });
     };
 
@@ -76,15 +68,15 @@ const Category = () => {
     const saveCategory = async () => {
         setSubmitted(true);
 
-        if (category.name.trim()) {
+        if (category.category_name.trim()) {
             try {
-                if (category.id) {
+                if (category.category_id) {
                     console.log('Cập nhật danh mục:', category);
                     await categoryService.updateCategory(category);
                     toast.current.show({ severity: 'success', summary: 'Thành công', detail: 'Đã cập nhật danh mục', life: 3000 });
                 } else {
                     console.log('Tạo danh mục mới:', category);
-                    const newCategory = { name: category.name, description: category.description };
+                    const newCategory = { category_name: category.category_name, description: category.description };
                     await categoryService.createCategory(newCategory);
                     toast.current.show({ severity: 'success', summary: 'Thành công', detail: 'Đã tạo danh mục', life: 3000 });
                 }
@@ -110,8 +102,8 @@ const Category = () => {
 
     const deleteCategory = async () => {
         try {
-            console.log('Xóa danh mục với ID:', category.id);
-            await categoryService.deleteCategory(category.id);
+            console.log('Xóa danh mục với ID:', category.category_id);
+            await categoryService.deleteCategory(category.category_id);
             loadCategories();
             setDeleteCategoryDialog(false);
             setCategory(emptyCategory);
@@ -132,7 +124,7 @@ const Category = () => {
 
     const deleteSelectedCategories = async () => {
         try {
-            const deletePromises = selectedCategories.map((cat) => categoryService.deleteCategory(cat.id));
+            const deletePromises = selectedCategories.map((cat) => categoryService.deleteCategory(cat.category_id));
             await Promise.all(deletePromises);
             loadCategories();
             setDeleteCategoriesDialog(false);
@@ -149,15 +141,6 @@ const Category = () => {
         let _category = { ...category };
         _category[`${name}`] = val;
         setCategory(_category);
-    };
-
-    const onPage = (event) => {
-        setLazyParams({
-            ...lazyParams,
-            first: event.first,
-            rows: event.rows,
-            page: event.page + 1,
-        });
     };
 
     const leftToolbarTemplate = () => {
@@ -179,7 +162,7 @@ const Category = () => {
         return (
             <>
                 <span className="p-column-title">Mã</span>
-                {rowData.id}
+                {rowData.category_id}
             </>
         );
     };
@@ -188,7 +171,7 @@ const Category = () => {
         return (
             <>
                 <span className="p-column-title">Tên</span>
-                {rowData.name}
+                {rowData.category_name}
             </>
         );
     };
@@ -254,25 +237,16 @@ const Category = () => {
                         value={categories}
                         selection={selectedCategories}
                         onSelectionChange={(e) => setSelectedCategories(e.value)}
-                        dataKey="id"
-                        paginator
-                        rows={lazyParams.rows}
-                        rowsPerPageOptions={[5, 10, 25]}
-                        totalRecords={totalRecords}
-                        lazy
-                        onPage={onPage}
-                        first={lazyParams.first}
+                        dataKey="category_id"
                         className="datatable-responsive"
-                        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                        currentPageReportTemplate="Hiển thị {first} đến {last} của {totalRecords} danh mục"
                         globalFilter={globalFilter}
                         emptyMessage="Không tìm thấy danh mục."
                         header={header}
                         responsiveLayout="scroll"
                     >
                         <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
-                        <Column field="id" header="Mã" sortable body={codeBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
-                        <Column field="name" header="Tên" sortable body={nameBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
+                        <Column field="category_id" header="Mã" sortable body={codeBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
+                        <Column field="category_name" header="Tên" sortable body={nameBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
                         <Column field="description" header="Mô tả" body={descriptionBodyTemplate} headerStyle={{ minWidth: '20rem' }}></Column>
                         <Column body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
                     </DataTable>
@@ -286,23 +260,23 @@ const Category = () => {
                         footer={categoryDialogFooter}
                         onHide={hideDialog}
                     >
-                        {category.id && (
+                        {category.category_id && (
                             <div className="field">
-                                <label htmlFor="id">Mã danh mục</label>
-                                <InputText id="id" value={category.id} disabled />
+                                <label htmlFor="category_id">Mã danh mục</label>
+                                <InputText id="category_id" value={category.category_id} disabled />
                             </div>
                         )}
                         <div className="field">
-                            <label htmlFor="name">Tên danh mục</label>
+                            <label htmlFor="category_name">Tên danh mục</label>
                             <InputText
-                                id="name"
-                                value={category.name}
-                                onChange={(e) => onInputChange(e, 'name')}
+                                id="category_name"
+                                value={category.category_name}
+                                onChange={(e) => onInputChange(e, 'category_name')}
                                 required
-                                autoFocus={!category.id}
-                                className={classNames({ 'p-invalid': submitted && !category.name })}
+                                autoFocus={!category.category_id}
+                                className={classNames({ 'p-invalid': submitted && !category.category_name })}
                             />
-                            {submitted && !category.name && <small className="p-invalid">Tên danh mục là bắt buộc.</small>}
+                            {submitted && !category.category_name && <small className="p-invalid">Tên danh mục là bắt buộc.</small>}
                         </div>
                         <div className="field">
                             <label htmlFor="description">Mô tả</label>
@@ -328,7 +302,7 @@ const Category = () => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {category && (
                                 <span>
-                                    Bạn có chắc chắn muốn xóa danh mục <b>{category.name}</b> không?
+                                    Bạn có chắc chắn muốn xóa danh mục <b>{category.category_name}</b> không?
                                 </span>
                             )}
                         </div>

@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAll, getById, insert, update, deleteshipping_methods } from '../controllers/shipping_methods.controller.js';
+import { getAll, getAllWithoutPagination, getById, insert, update, deleteshipping_methods } from '../controllers/shipping_methods.controller.js';
 import { body, param, validationResult } from 'express-validator';
 import { verifyAdmin } from '../middleware/authMiddleware.js';
 import validationConfig from '../common/validationConfig.js';
@@ -24,6 +24,7 @@ const shipping_methodsValidation = validationConfig['shipping_methods'] || [
 	body('created_at').optional(),
 ];
 const getAllMiddleware = routeConfig['shipping_methods'].getAll === 'admin' ? [verifyAdmin] : [];
+const getAllWithoutPaginationMiddleware = routeConfig['shipping_methods'].getAllWithoutPagination === 'admin' ? [verifyAdmin] : [];
 const getByIdMiddleware = routeConfig['shipping_methods'].getById === 'admin' ? [verifyAdmin] : [];
 const insertMiddleware = routeConfig['shipping_methods'].insert === 'admin' ? [verifyAdmin] : [];
 const updateMiddleware = routeConfig['shipping_methods'].update === 'admin' ? [verifyAdmin] : [];
@@ -32,7 +33,7 @@ const deleteMiddleware = routeConfig['shipping_methods'].delete === 'admin' ? [v
  * @swagger
  * /api/v1/shipping_methods:
  *   get:
- *     summary: Retrieve a list of shipping_methods
+ *     summary: Retrieve a paginated list of shipping_methods
  *     description: Fetches a paginated list of shipping_methods from the database.
  *     tags: [Shipping_methods]
  *     security:
@@ -52,7 +53,7 @@ const deleteMiddleware = routeConfig['shipping_methods'].delete === 'admin' ? [v
  *         description: Page number for pagination
  *     responses:
  *       200:
- *         description: A list of shipping_methods
+ *         description: A paginated list of shipping_methods
  *         content:
  *           application/json:
  *             schema:
@@ -92,6 +93,49 @@ const deleteMiddleware = routeConfig['shipping_methods'].delete === 'admin' ? [v
  *         description: Server error
  */
 router.get('/', [...getAllMiddleware], getAll);
+
+/**
+ * @swagger
+ * /api/v1/shipping_methods/all:
+ *   get:
+ *     summary: Retrieve all shipping_methods without pagination
+ *     description: Fetches all shipping_methods from the database without pagination.
+ *     tags: [Shipping_methods]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: A list of all shipping_methods
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       shipping_method_id:
+ *                         type: number
+ *                       method_name:
+ *                         type: string
+ *                       cost:
+ *                         type: number
+ *                       estimated_delivery_time:
+ *                         type: number
+ *                       is_active:
+ *                         type: number
+ *                       created_at:
+ *                         type: string
+ *       400:
+ *         description: Bad request
+ *       403:
+ *         description: Forbidden - Admin access required
+ *       500:
+ *         description: Server error
+ */
+router.get('/all', [...getAllWithoutPaginationMiddleware], getAllWithoutPagination);
 
 /**
  * @swagger
@@ -143,177 +187,7 @@ router.get('/', [...getAllMiddleware], getAll);
  */
 router.get('/:id', [...getByIdMiddleware, param('id').notEmpty().withMessage('ID is required').isInt().withMessage('ID must be an integer')], validate, getById);
 
-/**
- * @swagger
- * /api/v1/shipping_methods:
- *   post:
- *     summary: Create a new shipping_methods
- *     description: Creates a new shipping_methods.
- *     tags: [Shipping_methods]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - shipping_method_id
- *             properties:
- *               shipping_method_id:
- *                 type: number
- *                 description: The shipping_method_id of the shipping_methods
- *               method_name:
- *                 type: string
- *                 description: The method_name of the shipping_methods
- *               cost:
- *                 type: number
- *                 description: The cost of the shipping_methods
- *               estimated_delivery_time:
- *                 type: number
- *                 description: The estimated_delivery_time of the shipping_methods
- *               is_active:
- *                 type: number
- *                 description: The is_active of the shipping_methods
- *               created_at:
- *                 type: string
- *                 description: The created_at of the shipping_methods
- *     responses:
- *       201:
- *         description: Shipping_methods created
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 data:
- *                   type: object
- *                   properties:
- *                     shipping_method_id:
- *                       type: number
- *                     method_name:
- *                       type: string
- *                     cost:
- *                       type: number
- *                     estimated_delivery_time:
- *                       type: number
- *                     is_active:
- *                       type: number
- *                     created_at:
- *                       type: string
- *       400:
- *         description: Validation error or data empty
- *       403:
- *         description: Forbidden - Admin access required
- *       409:
- *         description: Shipping_methods already exists
- *       500:
- *         description: Server error
- */
 router.post('/', [...insertMiddleware, ...shipping_methodsValidation], validate, insert);
-
-/**
- * @swagger
- * /api/v1/shipping_methods/{id}:
- *   put:
- *     summary: Update a shipping_methods by ID
- *     description: Updates an existing shipping_methods.
- *     tags: [Shipping_methods]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: The shipping_methods ID
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - shipping_method_id
- *             properties:
- *               shipping_method_id:
- *                 type: number
- *                 description: The shipping_method_id of the shipping_methods
- *               method_name:
- *                 type: string
- *                 description: The method_name of the shipping_methods
- *               cost:
- *                 type: number
- *                 description: The cost of the shipping_methods
- *               estimated_delivery_time:
- *                 type: number
- *                 description: The estimated_delivery_time of the shipping_methods
- *               is_active:
- *                 type: number
- *                 description: The is_active of the shipping_methods
- *               created_at:
- *                 type: string
- *                 description: The created_at of the shipping_methods
- *     responses:
- *       200:
- *         description: Shipping_methods updated
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Updated successfully
- *       400:
- *         description: Validation error or data empty
- *       403:
- *         description: Forbidden - Admin access required
- *       404:
- *         description: Shipping_methods not found
- *       500:
- *         description: Server error
- */
 router.put('/:id', [...updateMiddleware, param('id').notEmpty().withMessage('ID is required').isInt().withMessage('ID must be an integer'), ...shipping_methodsValidation], validate, update);
-
-/**
- * @swagger
- * /api/v1/shipping_methods/{id}:
- *   delete:
- *     summary: Delete a shipping_methods by ID
- *     description: Deletes a shipping_methods by its ID.
- *     tags: [Shipping_methods]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: The shipping_methods ID
- *     responses:
- *       200:
- *         description: Shipping_methods deleted
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Deleted successfully
- *       400:
- *         description: Invalid ID format
- *       403:
- *         description: Forbidden - Admin access required
- *       404:
- *         description: Shipping_methods not found
- *       500:
- *         description: Server error
- */
 router.delete('/:id', [...deleteMiddleware, param('id').notEmpty().withMessage('ID is required').isInt().withMessage('ID must be an integer')], validate, deleteshipping_methods);
-
 export default router;

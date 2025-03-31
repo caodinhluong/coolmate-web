@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAll, getById, insert, update, deleteorder_details } from '../controllers/order_details.controller.js';
+import { getAll, getAllWithoutPagination, getById, insert, update, deleteorder_details } from '../controllers/order_details.controller.js';
 import { body, param, validationResult } from 'express-validator';
 import { verifyAdmin } from '../middleware/authMiddleware.js';
 import validationConfig from '../common/validationConfig.js';
@@ -24,6 +24,7 @@ const order_detailsValidation = validationConfig['order_details'] || [
 	body('warehouse_id').optional(),
 ];
 const getAllMiddleware = routeConfig['order_details'].getAll === 'admin' ? [verifyAdmin] : [];
+const getAllWithoutPaginationMiddleware = routeConfig['order_details'].getAllWithoutPagination === 'admin' ? [verifyAdmin] : [];
 const getByIdMiddleware = routeConfig['order_details'].getById === 'admin' ? [verifyAdmin] : [];
 const insertMiddleware = routeConfig['order_details'].insert === 'admin' ? [verifyAdmin] : [];
 const updateMiddleware = routeConfig['order_details'].update === 'admin' ? [verifyAdmin] : [];
@@ -32,7 +33,7 @@ const deleteMiddleware = routeConfig['order_details'].delete === 'admin' ? [veri
  * @swagger
  * /api/v1/order_details:
  *   get:
- *     summary: Retrieve a list of order_details
+ *     summary: Retrieve a paginated list of order_details
  *     description: Fetches a paginated list of order_details from the database.
  *     tags: [Order_details]
  *     security:
@@ -52,7 +53,7 @@ const deleteMiddleware = routeConfig['order_details'].delete === 'admin' ? [veri
  *         description: Page number for pagination
  *     responses:
  *       200:
- *         description: A list of order_details
+ *         description: A paginated list of order_details
  *         content:
  *           application/json:
  *             schema:
@@ -92,6 +93,49 @@ const deleteMiddleware = routeConfig['order_details'].delete === 'admin' ? [veri
  *         description: Server error
  */
 router.get('/', [...getAllMiddleware], getAll);
+
+/**
+ * @swagger
+ * /api/v1/order_details/all:
+ *   get:
+ *     summary: Retrieve all order_details without pagination
+ *     description: Fetches all order_details from the database without pagination.
+ *     tags: [Order_details]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: A list of all order_details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       detail_id:
+ *                         type: number
+ *                       order_id:
+ *                         type: number
+ *                       product_size_id:
+ *                         type: number
+ *                       quantity:
+ *                         type: number
+ *                       price:
+ *                         type: number
+ *                       warehouse_id:
+ *                         type: number
+ *       400:
+ *         description: Bad request
+ *       403:
+ *         description: Forbidden - Admin access required
+ *       500:
+ *         description: Server error
+ */
+router.get('/all', [...getAllWithoutPaginationMiddleware], getAllWithoutPagination);
 
 /**
  * @swagger
@@ -143,177 +187,7 @@ router.get('/', [...getAllMiddleware], getAll);
  */
 router.get('/:id', [...getByIdMiddleware, param('id').notEmpty().withMessage('ID is required').isInt().withMessage('ID must be an integer')], validate, getById);
 
-/**
- * @swagger
- * /api/v1/order_details:
- *   post:
- *     summary: Create a new order_details
- *     description: Creates a new order_details.
- *     tags: [Order_details]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - detail_id
- *             properties:
- *               detail_id:
- *                 type: number
- *                 description: The detail_id of the order_details
- *               order_id:
- *                 type: number
- *                 description: The order_id of the order_details
- *               product_size_id:
- *                 type: number
- *                 description: The product_size_id of the order_details
- *               quantity:
- *                 type: number
- *                 description: The quantity of the order_details
- *               price:
- *                 type: number
- *                 description: The price of the order_details
- *               warehouse_id:
- *                 type: number
- *                 description: The warehouse_id of the order_details
- *     responses:
- *       201:
- *         description: Order_details created
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 data:
- *                   type: object
- *                   properties:
- *                     detail_id:
- *                       type: number
- *                     order_id:
- *                       type: number
- *                     product_size_id:
- *                       type: number
- *                     quantity:
- *                       type: number
- *                     price:
- *                       type: number
- *                     warehouse_id:
- *                       type: number
- *       400:
- *         description: Validation error or data empty
- *       403:
- *         description: Forbidden - Admin access required
- *       409:
- *         description: Order_details already exists
- *       500:
- *         description: Server error
- */
 router.post('/', [...insertMiddleware, ...order_detailsValidation], validate, insert);
-
-/**
- * @swagger
- * /api/v1/order_details/{id}:
- *   put:
- *     summary: Update a order_details by ID
- *     description: Updates an existing order_details.
- *     tags: [Order_details]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: The order_details ID
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - detail_id
- *             properties:
- *               detail_id:
- *                 type: number
- *                 description: The detail_id of the order_details
- *               order_id:
- *                 type: number
- *                 description: The order_id of the order_details
- *               product_size_id:
- *                 type: number
- *                 description: The product_size_id of the order_details
- *               quantity:
- *                 type: number
- *                 description: The quantity of the order_details
- *               price:
- *                 type: number
- *                 description: The price of the order_details
- *               warehouse_id:
- *                 type: number
- *                 description: The warehouse_id of the order_details
- *     responses:
- *       200:
- *         description: Order_details updated
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Updated successfully
- *       400:
- *         description: Validation error or data empty
- *       403:
- *         description: Forbidden - Admin access required
- *       404:
- *         description: Order_details not found
- *       500:
- *         description: Server error
- */
 router.put('/:id', [...updateMiddleware, param('id').notEmpty().withMessage('ID is required').isInt().withMessage('ID must be an integer'), ...order_detailsValidation], validate, update);
-
-/**
- * @swagger
- * /api/v1/order_details/{id}:
- *   delete:
- *     summary: Delete a order_details by ID
- *     description: Deletes a order_details by its ID.
- *     tags: [Order_details]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: The order_details ID
- *     responses:
- *       200:
- *         description: Order_details deleted
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Deleted successfully
- *       400:
- *         description: Invalid ID format
- *       403:
- *         description: Forbidden - Admin access required
- *       404:
- *         description: Order_details not found
- *       500:
- *         description: Server error
- */
 router.delete('/:id', [...deleteMiddleware, param('id').notEmpty().withMessage('ID is required').isInt().withMessage('ID must be an integer')], validate, deleteorder_details);
-
 export default router;

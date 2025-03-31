@@ -1,4 +1,4 @@
-import { getAllImport_invoices, getImport_invoicesById, createImport_invoices, updateImport_invoices, deleteImport_invoices } from '../services/import_invoices.service.js';
+import { getAllImport_invoices, getAllImport_invoicesWithoutPagination, getImport_invoicesById, createImport_invoices, updateImport_invoices, deleteImport_invoices } from '../services/import_invoices.service.js';
 import logger from '../common/logger.js';
 
 export const getAll = async (req, res) => {
@@ -9,6 +9,22 @@ export const getAll = async (req, res) => {
 		res.status(200).json({ data, meta: { limit: parseInt(limit), page: parseInt(page), total } });
 	} catch (error) {
 		logger.error(`Get all import_invoices failed: ${error.message}`, { query: req.query, stack: error.stack });
+		if (error.message === 'Database error: ER_NO_SUCH_TABLE') {
+			res.status(400).json({ message: 'Table import_invoices does not exist' });
+		} else if (error.message.includes('Database error')) {
+			res.status(500).json({ message: 'Database error occurred' });
+		} else {
+			res.status(500).json({ message: `Error fetching import_invoices: ${error.message}` });
+		}
+	}
+};
+
+export const getAllWithoutPagination = async (req, res) => {
+	try {
+		const data = await getAllImport_invoicesWithoutPagination();
+		res.status(200).json({ data });
+	} catch (error) {
+		logger.error(`Get all import_invoices without pagination failed: ${error.message}`, { stack: error.stack });
 		if (error.message === 'Database error: ER_NO_SUCH_TABLE') {
 			res.status(400).json({ message: 'Table import_invoices does not exist' });
 		} else if (error.message.includes('Database error')) {

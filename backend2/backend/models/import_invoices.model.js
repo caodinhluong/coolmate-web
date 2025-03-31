@@ -13,9 +13,9 @@ class Import_invoices {
 	}
 
 	static async query(sql, params) {
-		try {{
+		try {
 			return await db.query(sql, params);
-		}} catch (error) {
+		} catch (error) {
 			logger.error(`Database query error: ${error.message}`, { sql, params, stack: error.stack });
 			throw new Error(`Database error: ${error.message}`);
 		}
@@ -23,34 +23,44 @@ class Import_invoices {
 
 	static async getAll({ limit = 10, offset = 0 } = {}) {
 		const sql = 'SELECT * FROM import_invoices LIMIT ? OFFSET ?';
-		const result = await this.query(sql, [limit, offset]);
+		const [result] = await this.query(sql, [limit, offset]);
+		return result;
+	}
+
+	static async getAllWithoutPagination() {
+		const sql = 'SELECT * FROM import_invoices';
+		const [result] = await this.query(sql);
 		return result;
 	}
 
 	static async getCount() {
 		const sql = 'SELECT COUNT(*) as total FROM import_invoices';
-		return await this.query(sql);
+		const [result] = await this.query(sql);
+		return result[0].total;
 	}
 
 	static async getById(id) {
 		const sql = 'SELECT * FROM import_invoices WHERE invoice_id = ?';
-		const result = await this.query(sql, [id]);
-		return result;
+		const [result] = await this.query(sql, [id]);
+		return result.length > 0 ? result[0] : null;
 	}
 
 	static async insert(import_invoices) {
 		const sql = 'INSERT INTO import_invoices SET ?';
-		return await this.query(sql, import_invoices);
+		const [result] = await this.query(sql, [import_invoices]);
+		return result;
 	}
 
 	static async update(id, import_invoices) {
 		const sql = 'UPDATE import_invoices SET ? WHERE invoice_id = ?';
-		return await this.query(sql, [import_invoices, id]);
+		const [result] = await this.query(sql, [import_invoices, id]);
+		return result;
 	}
 
 	static async delete(id) {
 		const sql = 'DELETE FROM import_invoices WHERE invoice_id = ?';
-		return await this.query(sql, [id]);
+		const [result] = await this.query(sql, [id]);
+		return result;
 	}
 }
 

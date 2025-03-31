@@ -7,7 +7,7 @@ import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
-import { SupplierService } from '../../demo/service/SupplierService';
+import { SupplierService } from '../../service/SupplierService';
 
 const Supplier = () => {
     let emptySupplier = {

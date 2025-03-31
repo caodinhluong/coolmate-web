@@ -13,6 +13,16 @@ export const getAllPromotions = async ({ limit = 10, offset = 0 } = {}) => {
 	}
 };
 
+export const getAllPromotionsWithoutPagination = async () => {
+	try {
+		const [data] = await Promotions.getAllWithoutPagination();
+		return data;
+	} catch (error) {
+		logger.error(`Get all promotions without pagination failed: ${error.message}`, { stack: error.stack });
+		throw error;
+	}
+};
+
 export const getPromotionsById = async (id) => {
 	try {
 		const [rows] = await Promotions.getById(id);
