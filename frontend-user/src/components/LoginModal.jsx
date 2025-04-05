@@ -142,7 +142,7 @@ const LoginModal = ({ isOpen, onClose }) => {
                 )}
             </AnimatePresence>
 
-           
+          
         </>
     );
 };
