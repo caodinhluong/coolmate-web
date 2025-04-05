@@ -16,13 +16,15 @@ const Feedback = () => {
     const feedbackService = new FeedbackService();
 
     useEffect(() => {
-        feedbackService.getFeedbacks().then((data) => {
-            console.log('Danh sách feedback:', data); // Debug
-            setFeedbacks(data);
-        }).catch((error) => {
-            console.error('Lỗi khi lấy danh sách:', error);
-            toast.current.show({ severity: 'error', summary: 'Lỗi', detail: 'Không thể tải danh sách feedback', life: 3000 });
-        });
+        feedbackService.getFeedbacks()
+            .then((data) => {
+                console.log('Danh sách phản hồi:', data);
+                setFeedbacks(data);
+            })
+            .catch((error) => {
+                console.error('Lỗi khi lấy danh sách phản hồi:', error);
+                toast.current.show({ severity: 'error', summary: 'Lỗi', detail: 'Không thể tải danh sách phản hồi', life: 3000 });
+            });
     }, []);
 
     const exportCSV = () => {
@@ -31,17 +33,15 @@ const Feedback = () => {
 
     const rightToolbarTemplate = () => {
         return (
-            <>
-                <Button label="Xuất CSV" icon="pi pi-upload" severity="help" onClick={exportCSV} />
-            </>
+            <Button label="Xuất CSV" icon="pi pi-upload" severity="help" onClick={exportCSV} />
         );
     };
 
-    const idBodyTemplate = (rowData) => {
+    const sttBodyTemplate = (rowData, { rowIndex }) => {
         return (
             <>
-                <span className="p-column-title">Mã</span>
-                {rowData.id}
+                <span className="p-column-title">STT</span>
+                {rowIndex + 1}
             </>
         );
     };
@@ -50,7 +50,7 @@ const Feedback = () => {
         return (
             <>
                 <span className="p-column-title">Sản phẩm</span>
-                {rowData.product_id}
+                {rowData.product_id || 'Không có'}
             </>
         );
     };
@@ -59,7 +59,7 @@ const Feedback = () => {
         return (
             <>
                 <span className="p-column-title">Người dùng</span>
-                {rowData.user_id}
+                {rowData.user_id || 'Không có'}
             </>
         );
     };
@@ -68,7 +68,7 @@ const Feedback = () => {
         return (
             <>
                 <span className="p-column-title">Đánh giá</span>
-                <Rating value={rowData.rating} readOnly cancel={false} />
+                <Rating value={rowData.rating || 0} readOnly cancel={false} />
             </>
         );
     };
@@ -77,7 +77,7 @@ const Feedback = () => {
         return (
             <>
                 <span className="p-column-title">Bình luận</span>
-                {rowData.message}
+                {rowData.message || 'Không có'}
             </>
         );
     };
@@ -86,14 +86,14 @@ const Feedback = () => {
         return (
             <>
                 <span className="p-column-title">Ngày tạo</span>
-                {new Date(rowData.create_at).toLocaleString()}
+                {rowData.create_at ? new Date(rowData.create_at).toLocaleString('vi-VN') : 'Không có'}
             </>
         );
     };
 
     const header = (
         <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-            <h5 className="m-0">Danh sách phản hồi</h5>
+            <h5 className="m-0">Quản lý phản hồi</h5>
             <span className="block mt-2 md:mt-0 p-input-icon-left">
                 <i className="pi pi-search" />
                 <InputText type="search" onChange={(e) => setGlobalFilter(e.target.value)} placeholder="Tìm kiếm..." />
@@ -123,7 +123,7 @@ const Feedback = () => {
                         header={header}
                         responsiveLayout="scroll"
                     >
-                        <Column field="id" header="Mã" sortable body={idBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
+                        <Column header="STT" sortable body={sttBodyTemplate} headerStyle={{ minWidth: '2rem' }}></Column>
                         <Column field="product_id" header="Sản phẩm" sortable body={productBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
                         <Column field="user_id" header="Người dùng" sortable body={userBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
                         <Column field="rating" header="Đánh giá" sortable body={ratingBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>

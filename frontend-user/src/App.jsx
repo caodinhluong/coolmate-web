@@ -9,6 +9,7 @@ import NamNavBar from './pages/NamNavBarPage.jsx'
 import NuNavBar from './pages/NuNavBarPage.jsx'
 import AllProductPage from './pages/AllProductPage.jsx';
 import ProductDetailPage from './pages/ProductDetailPage.jsx';
+import CartPage from './pages/CartPage';
 
 function App() {
   console.log('App is rendering');
@@ -20,6 +21,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/nam-navbar" element={<NamNavBar />} />
         <Route path="/nu-navbar" element={<NuNavBar />} />
+        <Route path="/cart" element={<CartPage />} />
         <Route path="/all-product" element={<AllProductPage />} />
         <Route path="/product-detail/:id" element={<ProductDetailPage />} />        {/* Optional: Thêm route mặc định */}
         <Route path="/" element={<Home />} />

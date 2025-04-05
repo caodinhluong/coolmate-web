@@ -6,27 +6,18 @@ import productService from "../services/ProductService"; // Đường dẫn tớ
 
 const AllProductPage = () => {
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+
 
   useEffect(() => {
     const fetchProducts = async () => {
-      try {
         const productList = await productService.getAllProducts();
         setProducts(productList);
-        setLoading(false);
-      } catch (err) {
-        setError(err.message);
-        setLoading(false);
-      }
-    };
 
+    };
     fetchProducts();
   }, []);
 
-  if (loading) return <div>Loading products...</div>;
-  if (error) return <div>Error: {error}</div>;
-  console.log("All products:", products);
+
   return (
     <div className="flex flex-col min-h-screen">
       <NavBar />
@@ -52,13 +43,11 @@ const AllProductPage = () => {
             </button>
           </div>
         </div>
-
         {/* Danh sách sản phẩm */}
         <div className="max-w-[90%] mx-auto py-8">
           <AllProduct products={products} />
         </div>
       </div>
-
       <Footer />
     </div>
   );

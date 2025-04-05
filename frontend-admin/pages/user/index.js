@@ -1,9 +1,9 @@
-import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
+import { Button } from 'primereact/button';
 import React, { useEffect, useRef, useState } from 'react';
 import { UserService } from '../../demo/service/UserService';
 
@@ -15,13 +15,15 @@ const User = () => {
     const userService = new UserService();
 
     useEffect(() => {
-        userService.getUsers().then((data) => {
-            console.log('Danh sách người dùng:', data); // Debug
-            setUsers(data);
-        }).catch((error) => {
-            console.error('Lỗi khi lấy danh sách:', error);
-            toast.current.show({ severity: 'error', summary: 'Lỗi', detail: 'Không thể tải danh sách người dùng', life: 3000 });
-        });
+        userService.getUsers()
+            .then((data) => {
+                console.log('Danh sách người dùng:', data);
+                setUsers(data);
+            })
+            .catch((error) => {
+                console.error('Lỗi khi lấy danh sách người dùng:', error);
+                toast.current.show({ severity: 'error', summary: 'Lỗi', detail: 'Không thể tải danh sách người dùng', life: 3000 });
+            });
     }, []);
 
     const exportCSV = () => {
@@ -30,17 +32,15 @@ const User = () => {
 
     const rightToolbarTemplate = () => {
         return (
-            <>
-                <Button label="Xuất CSV" icon="pi pi-upload" severity="help" onClick={exportCSV} />
-            </>
+            <Button label="Xuất CSV" icon="pi pi-upload" severity="help" onClick={exportCSV} />
         );
     };
 
-    const idBodyTemplate = (rowData) => {
+    const sttBodyTemplate = (rowData, { rowIndex }) => {
         return (
             <>
-                <span className="p-column-title">Mã</span>
-                {rowData.id}
+                <span className="p-column-title">STT</span>
+                {rowIndex + 1}
             </>
         );
     };
@@ -67,7 +67,7 @@ const User = () => {
         return (
             <>
                 <span className="p-column-title">Số điện thoại</span>
-                {rowData.phone}
+                {rowData.phone || 'Không có'}
             </>
         );
     };
@@ -76,7 +76,7 @@ const User = () => {
         return (
             <>
                 <span className="p-column-title">Địa chỉ</span>
-                {rowData.address}
+                {rowData.address || 'Không có'}
             </>
         );
     };
@@ -91,26 +91,24 @@ const User = () => {
     };
 
     const avtUrlBodyTemplate = (rowData) => {
-    // Giả sử ảnh nằm trong thư mục public/images/
-    const imagePath = rowData.avt_url ? `/images/${rowData.avt_url}` : null;
-
-    return (
-        <>
-            <span className="p-column-title">Ảnh đại diện</span>
-            {imagePath ? (
-                <img src={imagePath} alt="Avatar" style={{ width: '60px' , height: '80px'}} />
-            ) : (
-                'Không có'
-            )}
-        </>
-    );
-};
+        const imagePath = rowData.avt_url ? `/images/${rowData.avt_url}` : null;
+        return (
+            <>
+                <span className="p-column-title">Ảnh đại diện</span>
+                {imagePath ? (
+                    <img src={imagePath} alt="Avatar" style={{ width: '60px', height: '80px' }} />
+                ) : (
+                    'Không có'
+                )}
+            </>
+        );
+    };
 
     const genderBodyTemplate = (rowData) => {
         return (
             <>
                 <span className="p-column-title">Giới tính</span>
-                {rowData.gender}
+                {rowData.gender || 'Không có'}
             </>
         );
     };
@@ -156,7 +154,7 @@ const User = () => {
                         header={header}
                         responsiveLayout="scroll"
                     >
-                        <Column field="id" header="Mã" sortable body={idBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
+                        <Column header="STT" sortable body={sttBodyTemplate} headerStyle={{ minWidth: '2rem' }}></Column>
                         <Column field="name" header="Tên" sortable body={nameBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
                         <Column field="email" header="Email" sortable body={emailBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
                         <Column field="phone" header="Số điện thoại" sortable body={phoneBodyTemplate} headerStyle={{ minWidth: '12rem' }}></Column>

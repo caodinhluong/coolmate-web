@@ -1,5 +1,6 @@
 import api from './api';
 
+
 // Class Product
 class Product {
   constructor(product) {
@@ -76,6 +77,7 @@ const productService = {
       throw new Error(`Failed to fetch products: ${error.message}`);
     }
   },
+
 
   getProductById: async (id) => {
     try {

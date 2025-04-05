@@ -33,13 +33,15 @@ const Supplier = () => {
     const supplierService = new SupplierService();
 
     useEffect(() => {
-        supplierService.getSuppliers().then((data) => {
-            console.log('Danh sách nhà cung cấp:', data); // Debug
-            setSuppliers(data);
-        }).catch((error) => {
-            console.error('Lỗi khi lấy danh sách:', error);
-            toast.current.show({ severity: 'error', summary: 'Lỗi', detail: 'Không thể tải danh sách nhà cung cấp', life: 3000 });
-        });
+        supplierService.getSuppliers()
+            .then((data) => {
+                console.log('Danh sách nhà cung cấp:', data);
+                setSuppliers(data);
+            })
+            .catch((error) => {
+                console.error('Lỗi khi lấy danh sách nhà cung cấp:', error);
+                toast.current.show({ severity: 'error', summary: 'Lỗi', detail: 'Không thể tải danh sách nhà cung cấp', life: 3000 });
+            });
     }, []);
 
     const openNew = () => {
@@ -87,7 +89,7 @@ const Supplier = () => {
                 setSupplierDialog(false);
                 setSupplier(emptySupplier);
             } catch (error) {
-                console.error('Lỗi khi lưu:', error);
+                console.error('Lỗi khi lưu nhà cung cấp:', error);
                 toast.current.show({ severity: 'error', summary: 'Lỗi', detail: error.message || 'Không thể lưu nhà cung cấp', life: 3000 });
             }
         }
@@ -105,7 +107,7 @@ const Supplier = () => {
 
     const deleteSupplier = async () => {
         try {
-            console.log('Xóa nhà cung cấp với ID:', supplier.id); // Debug
+            console.log('Xóa nhà cung cấp với ID:', supplier.id);
             await supplierService.deleteSupplier(supplier.id);
             const updatedSuppliers = await supplierService.getSuppliers();
             setSuppliers(updatedSuppliers);
@@ -113,7 +115,7 @@ const Supplier = () => {
             setSupplier(emptySupplier);
             toast.current.show({ severity: 'success', summary: 'Thành công', detail: 'Đã xóa nhà cung cấp', life: 3000 });
         } catch (error) {
-            console.error('Lỗi khi xóa:', error);
+            console.error('Lỗi khi xóa nhà cung cấp:', error);
             toast.current.show({ severity: 'error', summary: 'Lỗi', detail: 'Không thể xóa nhà cung cấp', life: 3000 });
         }
     };
@@ -143,35 +145,29 @@ const Supplier = () => {
 
     const onInputChange = (e, name) => {
         const val = (e.target && e.target.value) || '';
-        let _supplier = { ...supplier };
-        _supplier[`${name}`] = val;
-        setSupplier(_supplier);
+        setSupplier((prev) => ({ ...prev, [name]: val }));
     };
 
     const leftToolbarTemplate = () => {
         return (
-            <>
-                <div className="my-2">
-                    <Button label="Thêm mới" icon="pi pi-plus" severity="success" className="mr-2" onClick={openNew} />
-                    <Button label="Xóa" icon="pi pi-trash" severity="danger" onClick={confirmDeleteSelected} disabled={!selectedSuppliers || !selectedSuppliers.length} />
-                </div>
-            </>
+            <div className="my-2">
+                <Button label="Thêm mới" icon="pi pi-plus" severity="success" className="mr-2" onClick={openNew} />
+                <Button label="Xóa" icon="pi pi-trash" severity="danger" onClick={confirmDeleteSelected} disabled={!selectedSuppliers || !selectedSuppliers.length} />
+            </div>
         );
     };
 
     const rightToolbarTemplate = () => {
         return (
-            <>
-                <Button label="Xuất CSV" icon="pi pi-upload" severity="help" onClick={exportCSV} />
-            </>
+            <Button label="Xuất CSV" icon="pi pi-upload" severity="help" onClick={exportCSV} />
         );
     };
 
-    const idBodyTemplate = (rowData) => {
+    const sttBodyTemplate = (rowData, { rowIndex }) => {
         return (
             <>
-                <span className="p-column-title">Mã</span>
-                {rowData.id}
+                <span className="p-column-title">STT</span>
+                {rowIndex + 1}
             </>
         );
     };
@@ -189,7 +185,7 @@ const Supplier = () => {
         return (
             <>
                 <span className="p-column-title">Người liên hệ</span>
-                {rowData.contact_name}
+                {rowData.contact_name || 'Không có'}
             </>
         );
     };
@@ -207,7 +203,7 @@ const Supplier = () => {
         return (
             <>
                 <span className="p-column-title">Email</span>
-                {rowData.email}
+                {rowData.email || 'Không có'}
             </>
         );
     };
@@ -225,7 +221,7 @@ const Supplier = () => {
         return (
             <>
                 <span className="p-column-title">Ngày tạo</span>
-                {new Date(rowData.created_at).toLocaleString()}
+                {rowData.created_at ? new Date(rowData.created_at).toLocaleString('vi-VN') : 'Không có'}
             </>
         );
     };
@@ -255,12 +251,14 @@ const Supplier = () => {
             <Button label="Lưu" icon="pi pi-check" text onClick={saveSupplier} />
         </>
     );
+
     const deleteSupplierDialogFooter = (
         <>
             <Button label="Không" icon="pi pi-times" text onClick={hideDeleteSupplierDialog} />
             <Button label="Có" icon="pi pi-check" text onClick={deleteSupplier} />
         </>
     );
+
     const deleteSuppliersDialogFooter = (
         <>
             <Button label="Không" icon="pi pi-times" text onClick={hideDeleteSuppliersDialog} />
@@ -293,7 +291,7 @@ const Supplier = () => {
                         responsiveLayout="scroll"
                     >
                         <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
-                        <Column field="id" header="Mã" sortable body={idBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
+                        <Column header="STT" sortable body={sttBodyTemplate} headerStyle={{ minWidth: '2rem' }}></Column>
                         <Column field="name" header="Tên" sortable body={nameBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
                         <Column field="contact_name" header="Người liên hệ" sortable body={contactNameBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
                         <Column field="phone" header="Số điện thoại" sortable body={phoneBodyTemplate} headerStyle={{ minWidth: '12rem' }}></Column>
@@ -326,7 +324,7 @@ const Supplier = () => {
                             <label htmlFor="contact_name">Người liên hệ</label>
                             <InputText
                                 id="contact_name"
-                                value={supplier.contact_name || ''} // Tránh lỗi undefined
+                                value={supplier.contact_name || ''}
                                 onChange={(e) => onInputChange(e, 'contact_name')}
                             />
                         </div>
@@ -345,7 +343,7 @@ const Supplier = () => {
                             <label htmlFor="email">Email</label>
                             <InputText
                                 id="email"
-                                value={supplier.email || ''} // Tránh lỗi undefined
+                                value={supplier.email || ''}
                                 onChange={(e) => onInputChange(e, 'email')}
                             />
                         </div>
@@ -366,9 +364,7 @@ const Supplier = () => {
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {supplier && (
-                                <span>
-                                    Bạn có chắc chắn muốn xóa nhà cung cấp <b>{supplier.name}</b> không?
-                                </span>
+                                <span>Bạn có chắc chắn muốn xóa nhà cung cấp <b>{supplier.name}</b> không?</span>
                             )}
                         </div>
                     </Dialog>

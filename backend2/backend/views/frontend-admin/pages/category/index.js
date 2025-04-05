@@ -31,19 +31,16 @@ const Category = () => {
 
     useEffect(() => {
         loadCategories();
-    }, []); // Chỉ gọi một lần khi component mount
+    }, []);
 
-    const loadCategories = () => {
-        categoryService
-            .getAllCategories()
-            .then((data) => {
-                console.log('Danh sách danh mục:', data);
-                setCategories(data || []);
-            })
-            .catch((error) => {
-                console.error('Lỗi khi lấy danh sách:', error);
-                toast.current.show({ severity: 'error', summary: 'Lỗi', detail: 'Không thể tải danh sách danh mục', life: 3000 });
-            });
+    const loadCategories = async () => {
+        try {
+            const data = await categoryService.getAllCategories();
+            setCategories(Array.isArray(data) ? data : []);
+        } catch (error) {
+            setCategories([]);
+            toast.current.show({ severity: 'error', summary: 'Lỗi', detail: 'Không thể tải danh sách danh mục', life: 3000 });
+        }
     };
 
     const openNew = () => {
@@ -68,25 +65,24 @@ const Category = () => {
     const saveCategory = async () => {
         setSubmitted(true);
 
-        if (category.category_name.trim()) {
-            try {
-                if (category.category_id) {
-                    console.log('Cập nhật danh mục:', category);
-                    await categoryService.updateCategory(category);
-                    toast.current.show({ severity: 'success', summary: 'Thành công', detail: 'Đã cập nhật danh mục', life: 3000 });
-                } else {
-                    console.log('Tạo danh mục mới:', category);
-                    const newCategory = { category_name: category.category_name, description: category.description };
-                    await categoryService.createCategory(newCategory);
-                    toast.current.show({ severity: 'success', summary: 'Thành công', detail: 'Đã tạo danh mục', life: 3000 });
-                }
-                loadCategories();
-                setCategoryDialog(false);
-                setCategory(emptyCategory);
-            } catch (error) {
-                console.error('Lỗi khi lưu danh mục:', error);
-                toast.current.show({ severity: 'error', summary: 'Lỗi', detail: error.message || 'Không thể lưu danh mục', life: 3000 });
+        if (!category.category_name.trim()) {
+            return;
+        }
+
+        try {
+            if (category.category_id) {
+                await categoryService.updateCategory(category);
+                toast.current.show({ severity: 'success', summary: 'Thành công', detail: 'Đã cập nhật danh mục', life: 3000 });
+            } else {
+                const newCategory = { category_name: category.category_name, description: category.description };
+                await categoryService.createCategory(newCategory);
+                toast.current.show({ severity: 'success', summary: 'Thành công', detail: 'Đã tạo danh mục', life: 3000 });
             }
+            await loadCategories();
+            setCategoryDialog(false);
+            setCategory(emptyCategory);
+        } catch (error) {
+            toast.current.show({ severity: 'error', summary: 'Lỗi', detail: error.message || 'Không thể lưu danh mục', life: 3000 });
         }
     };
 
@@ -102,14 +98,12 @@ const Category = () => {
 
     const deleteCategory = async () => {
         try {
-            console.log('Xóa danh mục với ID:', category.category_id);
             await categoryService.deleteCategory(category.category_id);
-            loadCategories();
+            await loadCategories();
             setDeleteCategoryDialog(false);
             setCategory(emptyCategory);
             toast.current.show({ severity: 'success', summary: 'Thành công', detail: 'Đã xóa danh mục', life: 3000 });
         } catch (error) {
-            console.error('Lỗi khi xóa:', error);
             toast.current.show({ severity: 'error', summary: 'Lỗi', detail: error.message || 'Không thể xóa danh mục', life: 3000 });
         }
     };
@@ -126,13 +120,12 @@ const Category = () => {
         try {
             const deletePromises = selectedCategories.map((cat) => categoryService.deleteCategory(cat.category_id));
             await Promise.all(deletePromises);
-            loadCategories();
+            await loadCategories();
             setDeleteCategoriesDialog(false);
             setSelectedCategories(null);
             toast.current.show({ severity: 'success', summary: 'Thành công', detail: 'Đã xóa các danh mục đã chọn', life: 3000 });
         } catch (error) {
-            console.error('Lỗi khi xóa nhiều danh mục:', error);
-            toast.current.show({ severity: 'error', summary: 'Lỗi', detail: 'Không thể xóa các danh mục', life: 3000 });
+            toast.current.show({ severity: 'error', summary: 'Lỗi', detail: error.message || 'Không thể xóa các danh mục', life: 3000 });
         }
     };
 
@@ -307,7 +300,6 @@ const Category = () => {
                             )}
                         </div>
                     </Dialog>
-
                     <Dialog
                         visible={deleteCategoriesDialog}
                         style={{ width: '450px' }}

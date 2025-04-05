@@ -12,7 +12,7 @@ import { CategoryService } from '../../demo/service/CategoryService';
 
 const Category = () => {
     let emptyCategory = {
-        id: null, // Đổi thành null để phân biệt tạo mới và cập nhật
+        id: null,
         name: '',
         mota: ''
     };
@@ -31,7 +31,7 @@ const Category = () => {
 
     useEffect(() => {
         categoryService.getCategories().then((data) => {
-            console.log('Danh sách danh mục:', data); // Debug dữ liệu từ API
+            console.log('Danh sách danh mục:', data);
             setCategories(data);
         }).catch((error) => {
             console.error('Lỗi khi lấy danh sách:', error);
@@ -61,15 +61,15 @@ const Category = () => {
     const saveCategory = async () => {
         setSubmitted(true);
 
-        if (category.name.trim()) { // Chỉ yêu cầu name khi tạo mới hoặc cập nhật
+        if (category.name.trim()) {
             try {
-                if (category.id) { // Nếu có id thì là cập nhật
+                if (category.id) {
                     console.log('Cập nhật danh mục:', category);
                     await categoryService.updateCategory(category);
                     toast.current.show({ severity: 'success', summary: 'Thành công', detail: 'Đã cập nhật danh mục', life: 3000 });
-                } else { // Nếu không có id thì là tạo mới
+                } else {
                     console.log('Tạo danh mục mới:', category);
-                    const newCategory = { name: category.name, mota: category.mota }; // Không gửi id khi tạo mới
+                    const newCategory = { name: category.name, mota: category.mota };
                     await categoryService.createCategory(newCategory);
                     toast.current.show({ severity: 'success', summary: 'Thành công', detail: 'Đã tạo danh mục', life: 3000 });
                 }
@@ -96,7 +96,7 @@ const Category = () => {
 
     const deleteCategory = async () => {
         try {
-            console.log('Xóa danh mục với ID:', category.id); // Debug ID
+            console.log('Xóa danh mục với ID:', category.id);
             await categoryService.deleteCategory(category.id);
             const updatedCategories = await categoryService.getCategories();
             setCategories(updatedCategories);
@@ -158,11 +158,12 @@ const Category = () => {
         );
     };
 
-    const codeBodyTemplate = (rowData) => {
+    // Sửa hàm codeBodyTemplate để hiển thị STT
+    const sttBodyTemplate = (rowData, { rowIndex }) => {
         return (
             <>
-                <span className="p-column-title">Mã</span>
-                {rowData.id}
+                <span className="p-column-title">STT</span>
+                {rowIndex + 1} {/* Đánh số từ 1 */}
             </>
         );
     };
@@ -222,6 +223,7 @@ const Category = () => {
             <Button label="Có" icon="pi pi-check" text onClick={deleteSelectedCategories} />
         </>
     );
+
     console.log('API URL:', process.env.NEXT_PUBLIC_API_BASE_URL);
     return (
         <div className="grid crud-demo">
@@ -248,20 +250,21 @@ const Category = () => {
                         responsiveLayout="scroll"
                     >
                         <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
-                        <Column field="id" header="Mã" sortable body={codeBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
+                        {/* Sửa cột Mã thành STT */}
+                        <Column header="STT" sortable body={sttBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
                         <Column field="name" header="Tên" sortable body={nameBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
                         <Column field="mota" header="Mô tả" body={descriptionBodyTemplate} headerStyle={{ minWidth: '20rem' }}></Column>
                         <Column body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
                     </DataTable>
 
                     <Dialog visible={categoryDialog} style={{ width: '450px' }} header="Chi tiết danh mục" modal className="p-fluid" footer={categoryDialogFooter} onHide={hideDialog}>
-                        {category.id && ( // Chỉ hiển thị id khi cập nhật
+                        {category.id && (
                             <div className="field">
                                 <label htmlFor="id">Mã danh mục</label>
                                 <InputText
                                     id="id"
                                     value={category.id}
-                                    disabled // Không cho chỉnh sửa id
+                                    disabled
                                 />
                             </div>
                         )}
@@ -272,7 +275,7 @@ const Category = () => {
                                 value={category.name}
                                 onChange={(e) => onInputChange(e, 'name')}
                                 required
-                                autoFocus={!category.id} // Focus vào name khi tạo mới
+                                autoFocus={!category.id}
                                 className={classNames({ 'p-invalid': submitted && !category.name })}
                             />
                             {submitted && !category.name && <small className="p-invalid">Tên danh mục là bắt buộc.</small>}
@@ -281,7 +284,7 @@ const Category = () => {
                             <label htmlFor="mota">Mô tả</label>
                             <InputTextarea
                                 id="mota"
-                                value={category.mota || ''} // Tránh lỗi undefined
+                                value={category.mota || ''}
                                 onChange={(e) => onInputChange(e, 'mota')}
                                 rows={3}
                                 cols={20}
