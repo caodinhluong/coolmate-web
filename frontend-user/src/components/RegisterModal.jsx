@@ -1,16 +1,13 @@
-import React from 'react';
-import  { useState } from 'react';
-
+import React, { useState } from 'react';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { IoClose, IoLogoGoogle, IoLogoFacebook } from 'react-icons/io5';
 import '../styles/_login_modal.scss'; // Assuming the same styles can be reused
 import { motion, AnimatePresence } from 'framer-motion';
-import LoginModal from './LoginModal';
+import LoginModal from './LoginModal'; // Import LoginModal
 
 const RegisterModal = ({ isOpen, onClose }) => {
-
-    const [isLoginOpen, setIsLoginOpen] = useState(false); // State for LoginModal
+    const [isLoginOpen, setIsLoginOpen] = useState(false); // State to control LoginModal
 
     const modalVariants = {
         hidden: {
@@ -150,9 +147,15 @@ const RegisterModal = ({ isOpen, onClose }) => {
                                 </button>
 
                                 <div className="flex justify-between mt-4 text-lg">
-                                    <a href="#" className="text-blue-800 hover:underline">
+                                    <button
+                                        onClick={() => {
+                                            onClose(); // Close RegisterModal
+                                            setIsLoginOpen(true); // Open LoginModal
+                                        }}
+                                        className="text-blue-800 hover:underline"
+                                    >
                                         Đăng nhập
-                                    </a>
+                                    </button>
                                     <a href="#" className="text-blue-800 hover:underline">
                                         Quên mật khẩu
                                     </a>
@@ -162,13 +165,13 @@ const RegisterModal = ({ isOpen, onClose }) => {
                     </div>
                 )}
             </AnimatePresence>
+
+            {/* Render LoginModal */}
             <LoginModal
                 isOpen={isLoginOpen}
                 onClose={() => setIsLoginOpen(false)}
             />
         </>
-
-
     );
 };
 

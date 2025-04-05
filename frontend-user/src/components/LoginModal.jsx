@@ -4,10 +4,8 @@ import { InputText } from 'primereact/inputtext';
 import { IoClose, IoLogoGoogle, IoLogoFacebook } from 'react-icons/io5';
 import '../styles/_login_modal.scss';
 import { motion, AnimatePresence } from 'framer-motion';
-import RegisterModal from './RegisterModal'; // Import the RegisterModal
 
 const LoginModal = ({ isOpen, onClose }) => {
-    const [isRegisterOpen, setIsRegisterOpen] = useState(false); // State for RegisterModal
 
     const modalVariants = {
         hidden: {
@@ -144,11 +142,7 @@ const LoginModal = ({ isOpen, onClose }) => {
                 )}
             </AnimatePresence>
 
-            {/* Render RegisterModal */}
-            <RegisterModal
-                isOpen={isRegisterOpen}
-                onClose={() => setIsRegisterOpen(false)}
-            />
+           
         </>
     );
 };
