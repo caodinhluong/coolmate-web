@@ -108,7 +108,6 @@ const productService = {
       console.log("Mapped product:", mappedProduct);
       return mappedProduct;
     } catch (error) {
-      throw new Error(`Failed to fetch product with id ${id}: ${error.message}`);
     }
   },
 };
