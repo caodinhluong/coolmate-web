@@ -13,7 +13,6 @@ const login = async (email, password) => {
     return { accessToken, user };
   } catch (error) {
     if (error.response) {
-      throw new Error(error.response.data.message || 'Login failed');
     } else {
       throw new Error('Network error');
     }
