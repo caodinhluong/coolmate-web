@@ -35,14 +35,7 @@ class Product {
 
   // Hàm map colors thành mảng các object { name, value }
   mapColors(colors) {
-    const defaultColors = [
-      { name: "Đen", value: "#000000" },
-      { name: "Xám Đậm", value: "#111111" },
-      { name: "Xám", value: "#222222" },
-      { name: "Xám Nhạt", value: "#333333" },
-      { name: "Xám Sáng", value: "#444444" },
-      { name: "Xám Trắng", value: "#555555" },
-    ];
+#
 
     if (!colors || !Array.isArray(colors) || colors.length === 0) {
       return defaultColors;
