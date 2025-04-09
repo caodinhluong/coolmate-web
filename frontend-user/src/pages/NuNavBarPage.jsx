@@ -164,6 +164,7 @@ const NuNavBarPage = () => {
             </div>
 
             </div>
+            <Footer />
         </div>
     );
 };
