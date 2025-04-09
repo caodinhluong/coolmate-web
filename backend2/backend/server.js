@@ -91,6 +91,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use((req, res, next) => next(createError(404, 'Resource not found')));
 app.use((err, req, res, next) => {
 	const status = err.status || 500;
+	const message = err.message || 'Internal Server Error';
 	res.status(status).json({ error: { status, message } });
 });
 app.listen(port, () => {
