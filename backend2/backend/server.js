@@ -80,7 +80,7 @@ app.use('/api/v1/warehouses', warehousesRoutes);
 const swaggerOptions = {
   definition: {
     openapi: '3.0.0',
-    info: { title: 'Ecommerce Platform API', version: '1.0.0', description: 'API cho nền tảng thương mại điện tử' },
+    info: { title: 'API', version: '1.0.0', description: 'API COOLMATE' },
     servers: [{ url: `http://localhost:${port}`, description: 'Development server' }],
     components: { securitySchemes: { bearerAuth: { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' } } }
   },
@@ -91,7 +91,6 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use((req, res, next) => next(createError(404, 'Resource not found')));
 app.use((err, req, res, next) => {
 	const status = err.status || 500;
-	const message = err.message || 'Internal Server Error';
 	res.status(status).json({ error: { status, message } });
 });
 app.listen(port, () => {
