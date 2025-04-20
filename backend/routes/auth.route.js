@@ -1,9 +1,17 @@
-const express = require('express');
-var router = express.Router();
-const authMiddleware = require('../middleware/auth.middleware');
-const authController = require('../controllers/auth.controller');
+import express from 'express';
+import { body, validationResult } from 'express-validator';
 
-router.post('/login', authController.login);
-router.get('/protected', authMiddleware, authController.protectedRoute);
+const router = express.Router();
 
-module.exports = router;
+const validate = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    logger.warn(`Validation failed for auth: ${JSON.stringify(errors.array())}`, { method: req.method, url: req.url });
+    return res.status(400).json({ errors: errors.array() });
+  }
+  next();
+};
+
+
+
+export default router;

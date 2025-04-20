@@ -26,7 +26,7 @@ const sale_prRoutes = require('./routes/sale_pr.route');
 const supplierRoutes = require('./routes/supplier.route');
 const userRoutes = require('./routes/user.route');
 const voucherRoutes = require('./routes/voucher.route');
-const loginRoutes = require('./routes/auth.route');
+const authRoutes = require('./routes/auth.route');
 
 app.use('/carts', cartRoutes);
 app.use('/cart-details', cart_detailRoutes);
@@ -42,7 +42,7 @@ app.use('/sale-prs', sale_prRoutes);
 app.use('/suppliers', supplierRoutes);
 app.use('/users', userRoutes);
 app.use('/vouchers', voucherRoutes);
-app.use('/auth', loginRoutes);
+// app.use('/auth', authRoutes);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
