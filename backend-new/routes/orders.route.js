@@ -4,6 +4,6 @@ const ordersController = require("../controllers/orders.controller");
 
 router.get('/', ordersController.getAll);
 router.get('/:id', ordersController.getById);
-router.post('/orders', ordersController.create);
+router.post('/orders', ordersController.createOrder);
 
 module.exports = router;

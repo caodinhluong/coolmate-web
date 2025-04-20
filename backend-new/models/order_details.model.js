@@ -49,4 +49,5 @@ order_details.create = (detailData, callback) => {
 };
 
 
+
 module.exports = order_details;
