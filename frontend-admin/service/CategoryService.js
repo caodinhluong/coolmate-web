@@ -1,12 +1,12 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:3000'; // Điều chỉnh theo port backend của bạn
+const API_BASE_URL = 'http://localhost:3001'; // Điều chỉnh theo port backend của bạn
 
 export class CategoryService {
     // Lấy danh sách danh mục với phân trang
     async getCategories({ limit = 10, page = 1 } = {}) {
         try {
-            const url = `${API_BASE_URL}/categorys`;
+            const url = `${API_BASE_URL}/categoriess`;
             console.log('Request URL:', url, 'Params:', { limit, page });
             const response = await axios.get(url, {
                 params: { limit, page }
@@ -22,7 +22,7 @@ export class CategoryService {
     // Lấy toàn bộ danh mục không phân trang
     async getAllCategories() {
         try {
-            const url = `${API_BASE_URL}/categories/all`;
+            const url = `${API_BASE_URL}/categoriess`;
             console.log('Request URL:', url);
             const response = await axios.get(url);
             console.log('Response:', response.data);

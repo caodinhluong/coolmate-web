@@ -1,12 +1,12 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:3000'; // Đồng bộ với CategoryService (giả sử port 3000)
+const API_BASE_URL = 'http://localhost:3001'; // Đồng bộ với CategoryService (giả sử port 3000)
 
 export class ProductService {
     // Lấy danh sách sản phẩm với phân trang
     async getProducts({ limit = 10, page = 1 } = {}) {
         try {
-            const url = `${API_BASE_URL}/products`;
+            const url = `${API_BASE_URL}/productss`;
             console.log('Request URL:', url, 'Params:', { limit, page });
             const response = await axios.get(url, {
                 params: { limit, page }
@@ -22,7 +22,7 @@ export class ProductService {
     // Lấy toàn bộ sản phẩm không phân trang
     async getAllProducts() {
         try {
-            const url = `${API_BASE_URL}/products/all`;
+            const url = `${API_BASE_URL}/productss/all`;
             console.log('Request URL:', url);
             const response = await axios.get(url);
             console.log('Response:', response.data);
@@ -36,7 +36,7 @@ export class ProductService {
     // Lấy sản phẩm theo ID
     async getProductById(id) {
         try {
-            const url = `${API_BASE_URL}/products/${id}`;
+            const url = `${API_BASE_URL}/productss/${id}`;
             console.log('Request URL:', url);
             const response = await axios.get(url);
             console.log('Response:', response.data);
@@ -50,7 +50,7 @@ export class ProductService {
     // Lấy danh sách danh mục với phân trang (dùng trong form sản phẩm nếu cần)
     async getCategories() {
         try {
-            const url = `${API_BASE_URL}/categories/all`;
+            const url = `${API_BASE_URL}/categoriess/all`;
             console.log('Request URL:', url);
             const response = await axios.get(url);
             console.log('Response:', response.data);
@@ -64,7 +64,7 @@ export class ProductService {
     // Thêm sản phẩm mới
     async createProduct(product) {
         try {
-            const url = `${API_BASE_URL}/products`;
+            const url = `${API_BASE_URL}/productss`;
             console.log('Request URL:', url, 'Data:', product);
             const response = await axios.post(url, product);
             console.log('Response:', response.data);
@@ -78,7 +78,7 @@ export class ProductService {
     // Cập nhật sản phẩm
     async updateProduct(product) {
         try {
-            const url = `${API_BASE_URL}/products/${product.product_id}`; // Sử dụng product_id thay vì id
+            const url = `${API_BASE_URL}/productss/${product.product_id}`; // Sử dụng product_id thay vì id
             console.log('Request URL:', url, 'Data:', product);
             const response = await axios.put(url, product);
             console.log('Response:', response.data);
@@ -92,7 +92,7 @@ export class ProductService {
     // Xóa sản phẩm
     async deleteProduct(id) {
         try {
-            const url = `${API_BASE_URL}/products/${id}`;
+            const url = `${API_BASE_URL}/productss/${id}`;
             console.log('Request URL:', url);
             const response = await axios.delete(url);
             console.log('Response:', response.data);
