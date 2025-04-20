@@ -14,9 +14,9 @@ import { ProductService } from '../../demo/service/ProductService';
 
 const Product = () => {
     let emptyProduct = {
-        id: null,
+        product_id: null,
         name: '',
-        mota: '',
+        description: '',
         price: 0,
         category_id: null,
         image_url: '',
@@ -120,8 +120,8 @@ const Product = () => {
 
     const deleteProduct = async () => {
         try {
-            console.log('Xóa sản phẩm với ID:', product.id);
-            await productService.deleteProduct(product.id);
+            console.log('Xóa sản phẩm với ID:', product.product_id);
+            await productService.deleteProduct(product.product_id);
             const updatedProducts = await productService.getProducts();
             setProducts(updatedProducts);
             setDeleteProductDialog(false);
@@ -238,7 +238,7 @@ const Product = () => {
         return (
             <>
                 <span className="p-column-title">Danh mục</span>
-                {category ? category.name : rowData.category_id || 'Không xác định'}
+                {category ? category.category_name : rowData.category_id || 'Không xác định'}
             </>
         );
     };
@@ -336,8 +336,8 @@ const Product = () => {
                             {submitted && !product.name && <small className="p-invalid">Tên sản phẩm là bắt buộc.</small>}
                         </div>
                         <div className="field">
-                            <label htmlFor="mota">Mô tả</label>
-                            <InputTextarea id="mota" value={product.mota || ''} onChange={(e) => onInputChange(e, 'mota')} rows={3} cols={20} />
+                            <label htmlFor="description">Mô tả</label>
+                            <InputTextarea id="description" value={product.description || ''} onChange={(e) => onInputChange(e, 'description')} rows={3} cols={20} />
                         </div>
                         <div className="field">
                             <label htmlFor="price">Giá</label>

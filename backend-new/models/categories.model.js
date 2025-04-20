@@ -37,7 +37,7 @@ categories.insert = (categories, callBack) => {
 };
 
 categories.update = (categories, id, callBack) => {
-  const sqlString = "UPDATE categories SET ? WHERE id = ?";
+  const sqlString = "UPDATE categories SET ? WHERE category_id = ?";
   db.query(sqlString, [categories, id], (err, res) => {
     if (err) {
       callBack(err);
@@ -48,7 +48,7 @@ categories.update = (categories, id, callBack) => {
 };
 
 categories.delete = (id, callBack) => {
-  db.query("DELETE FROM categories WHERE id = ?", id, (err, res) => {
+  db.query("DELETE FROM categories WHERE category_id = ?", id, (err, res) => {
     if (err) {
       callBack(err);
       return;

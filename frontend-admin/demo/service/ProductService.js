@@ -1,11 +1,11 @@
-const API_BASE_URL = 'http://localhost:3000'; // Thay bằng URL API thực tế
+const API_BASE_URL = 'http://localhost:3001'; // Thay bằng URL API thực tế
 
 export class ProductService {
     
     // Lấy danh sách sản phẩm
     async getProducts() {
         try {
-            const response = await fetch(`${API_BASE_URL}/products`);
+            const response = await fetch(`${API_BASE_URL}/productss`);
             if (!response.ok) throw new Error('Không thể lấy danh sách sản phẩm');
             return await response.json();
         } catch (error) {
@@ -17,7 +17,7 @@ export class ProductService {
     // Lấy danh sách danh mục
     async getCategories() {
         try {
-            const response = await fetch(`${API_BASE_URL}/categorys`);
+            const response = await fetch(`${API_BASE_URL}/categoriess`);
             if (!response.ok) throw new Error('Không thể lấy danh sách danh mục');
             return await response.json();
         } catch (error) {
@@ -29,7 +29,7 @@ export class ProductService {
     // Thêm sản phẩm mới
     async createProduct(product) {
         try {
-            const response = await fetch(`${API_BASE_URL}/products`, {
+            const response = await fetch(`${API_BASE_URL}/productss`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ export class ProductService {
     // Cập nhật sản phẩm
     async updateProduct(product) {
         try {
-            const response = await fetch(`${API_BASE_URL}/products/${product.id}`, {
+            const response = await fetch(`${API_BASE_URL}/productss/${product.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -65,7 +65,7 @@ export class ProductService {
     // Xóa sản phẩm
     async deleteProduct(id) {
         try {
-            const response = await fetch(`${API_BASE_URL}/products/${id}`, {
+            const response = await fetch(`${API_BASE_URL}/productss/${id}`, {
                 method: 'DELETE',
             });
             if (!response.ok) throw new Error('Không thể xóa sản phẩm');

@@ -43,7 +43,7 @@ products.insert = (products, callBack) => {
 };
 
 products.update = (products, id, callBack) => {
-  const sqlString = "UPDATE products SET ? WHERE id = ?";
+  const sqlString = "UPDATE products SET ? WHERE product_id = ?";
   db.query(sqlString, [products, id], (err, res) => {
     if (err) {
       callBack(err);
@@ -54,7 +54,7 @@ products.update = (products, id, callBack) => {
 };
 
 products.delete = (id, callBack) => {
-  db.query("DELETE FROM products WHERE id = ?", id, (err, res) => {
+  db.query("DELETE FROM products WHERE product_id = ?", id, (err, res) => {
     if (err) {
       callBack(err);
       return;
