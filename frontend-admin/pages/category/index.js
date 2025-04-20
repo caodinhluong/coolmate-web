@@ -13,8 +13,8 @@ import { CategoryService } from '../../demo/service/CategoryService';
 const Category = () => {
     let emptyCategory = {
         id: null,
-        name: '',
-        mota: ''
+        category_name: '',
+        description: ''
     };
 
     const [categories, setCategories] = useState([]);
@@ -61,15 +61,15 @@ const Category = () => {
     const saveCategory = async () => {
         setSubmitted(true);
 
-        if (category.name.trim()) {
+        if (category.category_name.trim()) {
             try {
-                if (category.id) {
+                if (category.category_id) {
                     console.log('Cập nhật danh mục:', category);
                     await categoryService.updateCategory(category);
                     toast.current.show({ severity: 'success', summary: 'Thành công', detail: 'Đã cập nhật danh mục', life: 3000 });
                 } else {
                     console.log('Tạo danh mục mới:', category);
-                    const newCategory = { name: category.name, mota: category.mota };
+                    const newCategory = { category_name: category.category_name, description: category.description };
                     await categoryService.createCategory(newCategory);
                     toast.current.show({ severity: 'success', summary: 'Thành công', detail: 'Đã tạo danh mục', life: 3000 });
                 }
@@ -96,8 +96,8 @@ const Category = () => {
 
     const deleteCategory = async () => {
         try {
-            console.log('Xóa danh mục với ID:', category.id);
-            await categoryService.deleteCategory(category.id);
+            console.log('Xóa danh mục với ID:', category.category_id);
+            await categoryService.deleteCategory(category.category_id);
             const updatedCategories = await categoryService.getCategories();
             setCategories(updatedCategories);
             setDeleteCategoryDialog(false);
@@ -172,7 +172,7 @@ const Category = () => {
         return (
             <>
                 <span className="p-column-title">Tên</span>
-                {rowData.name}
+                {rowData.category_name}
             </>
         );
     };
@@ -181,7 +181,7 @@ const Category = () => {
         return (
             <>
                 <span className="p-column-title">Mô tả</span>
-                {rowData.mota}
+                {rowData.description}
             </>
         );
     };
@@ -224,7 +224,6 @@ const Category = () => {
         </>
     );
 
-    console.log('API URL:', process.env.NEXT_PUBLIC_API_BASE_URL);
     return (
         <div className="grid crud-demo">
             <div className="col-12">
@@ -252,8 +251,8 @@ const Category = () => {
                         <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
                         {/* Sửa cột Mã thành STT */}
                         <Column header="STT" sortable body={sttBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
-                        <Column field="name" header="Tên" sortable body={nameBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
-                        <Column field="mota" header="Mô tả" body={descriptionBodyTemplate} headerStyle={{ minWidth: '20rem' }}></Column>
+                        <Column field="category_name" header="Tên" sortable body={nameBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
+                        <Column field="description" header="Mô tả" body={descriptionBodyTemplate} headerStyle={{ minWidth: '20rem' }}></Column>
                         <Column body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
                     </DataTable>
 
@@ -263,7 +262,7 @@ const Category = () => {
                                 <label htmlFor="id">Mã danh mục</label>
                                 <InputText
                                     id="id"
-                                    value={category.id}
+                                    value={category.category_id}
                                     disabled
                                 />
                             </div>
@@ -272,11 +271,11 @@ const Category = () => {
                             <label htmlFor="name">Tên danh mục</label>
                             <InputText
                                 id="name"
-                                value={category.name}
+                                value={category.category_name}
                                 onChange={(e) => onInputChange(e, 'name')}
                                 required
-                                autoFocus={!category.id}
-                                className={classNames({ 'p-invalid': submitted && !category.name })}
+                                autoFocus={!category.category_id}
+                                className={classNames({ 'p-invalid': submitted && !category.category_name })}
                             />
                             {submitted && !category.name && <small className="p-invalid">Tên danh mục là bắt buộc.</small>}
                         </div>
@@ -284,7 +283,7 @@ const Category = () => {
                             <label htmlFor="mota">Mô tả</label>
                             <InputTextarea
                                 id="mota"
-                                value={category.mota || ''}
+                                value={category.description || ''}
                                 onChange={(e) => onInputChange(e, 'mota')}
                                 rows={3}
                                 cols={20}
