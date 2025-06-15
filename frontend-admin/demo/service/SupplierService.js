@@ -1,10 +1,10 @@
-const API_BASE_URL = 'http://localhost:3000'; // Thay bằng URL API thực tế
+const API_BASE_URL = 'http://localhost:3001'; // Thay bằng URL API thực tế
 
 export class SupplierService {
     // Lấy danh sách nhà cung cấp
     async getSuppliers() {
         try {
-            const response = await fetch(`${API_BASE_URL}/suppliers`);
+            const response = await fetch(`${API_BASE_URL}/supplierss`);
             if (!response.ok) throw new Error('Không thể lấy danh sách nhà cung cấp');
             return await response.json();
         } catch (error) {

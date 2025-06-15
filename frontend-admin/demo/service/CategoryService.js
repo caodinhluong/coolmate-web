@@ -6,7 +6,7 @@ export class CategoryService {
     // Lấy danh sách danh mục
     async getCategories() {
         try {
-            const response = await axios.get(`${API_BASE_URL}/categoriess`);
+            const response = await axios.get(`${API_BASE_URL}/categories`);
             return response.data;
         } catch (error) {
             console.error('Lỗi khi lấy danh sách danh mục:', error);
@@ -17,7 +17,7 @@ export class CategoryService {
     // Tạo danh mục mới
     async createCategory(category) {
         try {
-            const response = await axios.post(`${API_BASE_URL}/categoriess`, category);
+            const response = await axios.post(`${API_BASE_URL}/categories`, category);
             return response.data;
         } catch (error) {
             console.error('Lỗi khi tạo danh mục:', error);
@@ -26,9 +26,9 @@ export class CategoryService {
     }
 
     // Cập nhật danh mục
-    async updateCategory(category) {
+    async updateCategory(categoryId, categoryData) {
         try {
-            const response = await axios.put(`${API_BASE_URL}/categoriess/${category.id}`, category);
+            const response = await axios.put(`${API_BASE_URL}/categories/${categoryId}`, categoryData);
             return response.data;
         } catch (error) {
             console.error('Lỗi khi cập nhật danh mục:', error);
@@ -39,7 +39,8 @@ export class CategoryService {
     // Xóa danh mục
     async deleteCategory(id) {
         try {
-            await axios.delete(`${API_BASE_URL}/categoriess/${id}`);
+            // Hàm này nhận trực tiếp id nên đã đúng, không cần sửa.
+            await axios.delete(`${API_BASE_URL}/categories/${id}`);
             return true;
         } catch (error) {
             console.error('Lỗi khi xóa danh mục:', error);

@@ -1,20 +1,22 @@
-
 const db = require("../common/db");
 
-const orders =  (orders) => {
-  this.order_id = orders.order_id;
-  this.status = orders.status;
-  this.order_date = orders.order_date;
-  this.payment_method = orders.payment_method;
-  this.voucher_id = orders.voucher_id;
-  this.total_amount = orders.total_amount;
-  this.address = orders.address;
-  this.customer_name = orders.customer_name;
-  this.phone = orders.phone;
-  this.created_at = orders.created_at;
+// Constructor
+const Order = function(order) {
+    this.order_id = order.order_id;
+    this.status = order.status;
+    this.order_date = order.order_date;
+    this.payment_method = order.payment_method;
+    this.voucher_id = order.voucher_id;
+    this.total_amount = order.total_amount;
+    this.address = order.address;
+    this.customer_name = order.customer_name;
+    this.phone = order.phone;
+    this.created_at = order.created_at;
 };
 
-orders.getById = (id, callback) => {
+// ... (các hàm getById, getAll, getPending, getNonPending, updateStatus giữ nguyên) ...
+
+Order.getById = (id, callback) => {
   const sqlString = "SELECT * FROM orders WHERE order_id = ?";
   db.query(sqlString, id, (err, result) => {
     if (err) {
@@ -24,7 +26,7 @@ orders.getById = (id, callback) => {
   });
 };
 
-orders.getAll = (callback) => {
+Order.getAll = (callback) => {
   const sqlString = "SELECT * FROM orders";
   db.query(sqlString, (err, result) => {
     if (err) {
@@ -34,8 +36,46 @@ orders.getAll = (callback) => {
   });
 };
 
-orders.create = (orderData, orderDetailsData, callback) => {
-  // Kiểm tra dữ liệu đầu vào
+Order.getPending = (callback) => {
+  const sqlString = "SELECT * FROM orders WHERE status = 'pending'";
+  db.query(sqlString, (err, result) => {
+    if (err) {
+      return callback(err);
+    }
+    callback(null, result);
+  });
+};
+
+Order.getNonPending = (callback) => {
+  const sqlString = "SELECT * FROM orders WHERE status != 'pending'";
+  db.query(sqlString, (err, result) => {
+    if (err) {
+      return callback(err);
+    }
+    callback(null, result);
+  });
+};
+
+Order.updateStatus = (orderId, newStatus, callback) => {
+  if (!orderId || !newStatus) {
+    return callback(new Error("Order ID and new status are required"));
+  }
+  const sqlString = "UPDATE orders SET status = ? WHERE order_id = ?";
+  const values = [newStatus, orderId];
+  db.query(sqlString, values, (err, result) => {
+    if (err) {
+      return callback(err);
+    }
+    if (result.affectedRows === 0) {
+      return callback(new Error("No order found with the provided ID"));
+    }
+    callback(null, { order_id: orderId, status: newStatus });
+  });
+};
+
+Order.create = (orderData, orderDetailsData, callback) => {
+    // ... (Hàm create giữ nguyên) ...
+    // Input validation
   if (
     !orderData ||
     !orderData.payment_method ||
@@ -44,31 +84,31 @@ orders.create = (orderData, orderDetailsData, callback) => {
     !orderData.customer_name ||
     !orderData.phone
   ) {
-    return callback(new Error("Thiếu thông tin bắt buộc: payment_method, total_amount, address, customer_name, phone"));
+    return callback(new Error("Missing required fields: payment_method, total_amount, address, customer_name, phone"));
   }
   if (!orderDetailsData || !Array.isArray(orderDetailsData) || orderDetailsData.length === 0) {
-    return callback(new Error("Chi tiết đơn hàng không hợp lệ hoặc rỗng"));
+    return callback(new Error("Invalid or empty order details"));
   }
   for (const detail of orderDetailsData) {
     if (!detail.product_id || !detail.quantity || !detail.price) {
-      return callback(new Error("Chi tiết đơn hàng thiếu product_id, quantity hoặc price"));
+      return callback(new Error("Order detail missing product_id, quantity, or price"));
     }
   }
 
   db.getConnection((err, connection) => {
     if (err) {
-      console.error("Lỗi khi lấy kết nối:", err);
+      console.error("Error getting connection:", err);
       return callback(err);
     }
 
     connection.beginTransaction((err) => {
       if (err) {
-        console.error("Lỗi khi bắt đầu giao dịch:", err);
+        console.error("Error starting transaction:", err);
         connection.release();
         return callback(err);
       }
 
-      // Chèn vào bảng orders
+      // Insert into orders table
       const orderSql = `
         INSERT INTO orders (status, order_date, payment_method, voucher_id, total_amount, address, customer_name, phone)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
@@ -84,22 +124,22 @@ orders.create = (orderData, orderDetailsData, callback) => {
         orderData.phone,
       ];
 
-      console.log("Thực hiện INSERT orders:", orderSql, orderValues); // Log để debug
+      console.log("Executing INSERT orders:", orderSql, orderValues);
 
       connection.query(orderSql, orderValues, (err, orderResult) => {
         if (err || !orderResult) {
-          console.error("Lỗi khi chèn orders:", err || "orderResult là undefined");
+          console.error("Error inserting orders:", err || "orderResult is undefined");
           connection.rollback(() => {
             connection.release();
-            return callback(err || new Error("Không thể chèn đơn hàng"));
+            return callback(err || new Error("Failed to insert order"));
           });
           return;
         }
 
         const orderId = orderResult.insertId;
-        console.log("orderId:", orderId); // Log để xác nhận orderId
+        console.log("orderId:", orderId);
 
-        // Chèn vào bảng order_details
+        // Insert into order_details table
         const detailSql = `
           INSERT INTO order_details (order_id, product_id, quantity, price, size)
           VALUES ?
@@ -112,11 +152,11 @@ orders.create = (orderData, orderDetailsData, callback) => {
           detail.size || null,
         ]);
 
-        console.log("Thực hiện INSERT order_details:", detailSql, detailValues); // Log để debug
+        console.log("Executing INSERT order_details:", detailSql, detailValues);
 
         connection.query(detailSql, [detailValues], (err, detailResult) => {
           if (err) {
-            console.error("Lỗi khi chèn order_details:", err);
+            console.error("Error inserting order_details:", err);
             connection.rollback(() => {
               connection.release();
               return callback(err);
@@ -126,7 +166,7 @@ orders.create = (orderData, orderDetailsData, callback) => {
 
           connection.commit((err) => {
             if (err) {
-              console.error("Lỗi khi commit giao dịch:", err);
+              console.error("Error committing transaction:", err);
               connection.rollback(() => {
                 connection.release();
                 return callback(err);
@@ -135,7 +175,7 @@ orders.create = (orderData, orderDetailsData, callback) => {
             }
 
             connection.release();
-            console.log("Giao dịch thành công, order_id:", orderId);
+            console.log("Transaction successful, order_id:", orderId);
             callback(null, { order_id: orderId, details: detailResult });
           });
         });
@@ -144,4 +184,165 @@ orders.create = (orderData, orderDetailsData, callback) => {
   });
 };
 
-module.exports = orders;
+
+// =================================================================
+// ==========> CÁC HÀM THỐNG KÊ MỚI <==========
+// =================================================================
+
+/**
+ * 1. Thống kê doanh thu theo tháng của một năm cụ thể
+ * @param {number} year - Năm cần thống kê (ví dụ: 2024)
+ * @param {function} callback - Callback function
+ */
+Order.getMonthlyRevenue = (year, callback) => {
+    // Trạng thái đơn hàng thành công, có thể là 'completed' hoặc 'shipping' tùy vào logic của bạn
+    const COMPLETED_STATUS = 'completed'; 
+
+    const sqlString = `
+        SELECT
+            MONTH(order_date) AS month,
+            SUM(total_amount) AS revenue
+        FROM
+            orders
+        WHERE
+            YEAR(order_date) = ? AND status = ?
+        GROUP BY
+            MONTH(order_date)
+        ORDER BY
+            month ASC;
+    `;
+    db.query(sqlString, [year, COMPLETED_STATUS], (err, result) => {
+        if (err) {
+            return callback(err);
+        }
+        // Chuyển đổi kết quả thành một mảng 12 tháng, với giá trị 0 cho các tháng không có doanh thu
+        const monthlyRevenue = Array.from({ length: 12 }, (_, i) => ({
+            month: i + 1,
+            revenue: 0
+        }));
+        result.forEach(row => {
+            monthlyRevenue[row.month - 1].revenue = row.revenue;
+        });
+        callback(null, monthlyRevenue);
+    });
+};
+
+/**
+ * 2. Thống kê sản phẩm bán chạy nhất
+ * @param {object} options - Tùy chọn { limit: số lượng sản phẩm, startDate: ngày bắt đầu, endDate: ngày kết thúc }
+ * @param {function} callback - Callback function
+ */
+Order.getBestSellingProducts = (options, callback) => {
+    const { limit = 10, startDate, endDate } = options;
+    const COMPLETED_STATUS = 'completed';
+
+    let sqlString = `
+        SELECT
+            p.product_id,
+            p.name,
+            p.image_url,
+            SUM(od.quantity) AS total_quantity_sold
+        FROM
+            order_details od
+        JOIN
+            orders o ON od.order_id = o.order_id
+        JOIN
+            products p ON od.product_id = p.product_id
+        WHERE
+            o.status = ?
+    `;
+
+    const params = [COMPLETED_STATUS];
+
+    if (startDate && endDate) {
+        sqlString += ' AND o.order_date BETWEEN ? AND ?';
+        params.push(startDate, endDate);
+    }
+    
+    sqlString += `
+        GROUP BY
+            p.product_id, p.name, p.image_url
+        ORDER BY
+            total_quantity_sold DESC
+        LIMIT ?;
+    `;
+    params.push(limit);
+
+    db.query(sqlString, params, (err, result) => {
+        if (err) {
+            return callback(err);
+        }
+        callback(null, result);
+    });
+};
+
+/**
+ * 3. Lấy danh sách tất cả các sản phẩm đã bán trong một khoảng thời gian
+ * @param {object} options - Tùy chọn { startDate: ngày bắt đầu, endDate: ngày kết thúc }
+ * @param {function} callback - Callback function
+ */
+Order.getSoldProductsList = (options, callback) => {
+    const { startDate, endDate } = options;
+    const COMPLETED_STATUS = 'completed';
+    
+    let sqlString = `
+        SELECT DISTINCT
+            p.product_id,
+            p.name,
+            p.image_url,
+            p.price as current_price,
+            c.category_name
+        FROM
+            order_details od
+        JOIN
+            orders o ON od.order_id = o.order_id
+        JOIN
+            products p ON od.product_id = p.product_id
+        LEFT JOIN
+            categories c ON p.category_id = c.category_id
+        WHERE
+            o.status = ?
+    `;
+
+    const params = [COMPLETED_STATUS];
+
+    if (startDate && endDate) {
+        sqlString += ' AND o.order_date BETWEEN ? AND ?';
+        params.push(startDate, endDate);
+    }
+
+    sqlString += ' ORDER BY p.name ASC;';
+
+    db.query(sqlString, params, (err, result) => {
+        if (err) {
+            return callback(err);
+        }
+        callback(null, result);
+    });
+};
+
+/**
+ * 4. Thống kê tổng quan: Tổng doanh thu, tổng đơn hàng, tổng sản phẩm đã bán
+ * @param {function} callback - Callback function
+ */
+Order.getOverviewStats = (callback) => {
+    const COMPLETED_STATUS = 'completed';
+    const sqlString = `
+        SELECT
+            (SELECT SUM(total_amount) FROM orders WHERE status = ?) AS total_revenue,
+            (SELECT COUNT(order_id) FROM orders WHERE status = ?) AS total_orders,
+            (SELECT SUM(quantity) FROM order_details od JOIN orders o ON od.order_id = o.order_id WHERE o.status = ?) AS total_products_sold;
+    `;
+    
+    const params = [COMPLETED_STATUS, COMPLETED_STATUS, COMPLETED_STATUS];
+
+    db.query(sqlString, params, (err, result) => {
+        if (err) {
+            return callback(err);
+        }
+        // Kết quả trả về là một mảng có 1 phần tử object
+        callback(null, result[0]);
+    });
+};
+
+module.exports = Order;

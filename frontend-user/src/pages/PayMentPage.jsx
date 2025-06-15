@@ -136,6 +136,7 @@ const PayMentPage = () => {
         product_id: item.id,
         quantity: item.quantity,
         price: item.price,
+        size: item.size,
       }));
 
       await OrderService.createOrder(orderData, orderDetails);

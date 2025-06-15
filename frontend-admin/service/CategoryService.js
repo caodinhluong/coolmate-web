@@ -6,7 +6,7 @@ export class CategoryService {
     // Lấy danh sách danh mục với phân trang
     async getCategories({ limit = 10, page = 1 } = {}) {
         try {
-            const url = `${API_BASE_URL}/categoriess`;
+            const url = `${API_BASE_URL}/categories`;
             console.log('Request URL:', url, 'Params:', { limit, page });
             const response = await axios.get(url, {
                 params: { limit, page }
@@ -22,7 +22,7 @@ export class CategoryService {
     // Lấy toàn bộ danh mục không phân trang
     async getAllCategories() {
         try {
-            const url = `${API_BASE_URL}/categoriess`;
+            const url = `${API_BASE_URL}/categories`;
             console.log('Request URL:', url);
             const response = await axios.get(url);
             console.log('Response:', response.data);

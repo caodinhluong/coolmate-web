@@ -3,7 +3,6 @@ const categories = (categories) => {
 this.category_id = categories.category_id;
 this.category_name = categories.category_name;
 this.description = categories.description;
-this.created_at = categories.created_at;
 };
 categories.getById = (id, callback) => {
   const sqlString = "SELECT * FROM categories WHERE id = ? ";

@@ -62,7 +62,7 @@ class Product {
 const productService = {
   getAllProducts: async () => {
     try {
-      const response = await api.get('/productss');
+      const response = await api.get('/products');
       console.log("API response for getAllProducts:", response);
       
       const products = response?.data || response;
@@ -81,7 +81,7 @@ const productService = {
 
   getProductById: async (id) => {
     try {
-      const response = await api.get(`/productss/${id}`);
+      const response = await api.get(`/products/${id}`);
       console.log("API response for getProductById:", response);
       
       let productData;

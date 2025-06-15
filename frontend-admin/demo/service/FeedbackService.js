@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:3000'; // Thay bằng URL API thực tế của bạn
+const API_BASE_URL = 'http://localhost:3001'; // Thay bằng URL API thực tế của bạn
 
 export class FeedbackService {
     // Lấy danh sách feedback
@@ -33,7 +33,7 @@ export class FeedbackService {
     // Cập nhật feedback
     async updateFeedback(feedback) {
         try {
-            const response = await fetch(`${API_BASE_URL}/feedbacks/${feedback.id}`, {
+            const response = await fetch(`${API_BASE_URL}/feedbackss/${feedback.id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(feedback),
@@ -49,7 +49,7 @@ export class FeedbackService {
     // Xóa feedback
     async deleteFeedback(id) {
         try {
-            const response = await fetch(`${API_BASE_URL}/feedbacks/${id}`, {
+            const response = await fetch(`${API_BASE_URL}/feedbackss/${id}`, {
                 method: 'DELETE',
             });
             if (!response.ok) throw new Error(`Không thể xóa feedback với ID: ${id}`);

@@ -1,4 +1,6 @@
 const db = require("../common/db");
+const bcrypt = require('bcryptjs');  
+
 const users = (users) => {
 this.user_id = users.user_id;
 this.email = users.email;
@@ -13,8 +15,23 @@ this.role = users.role;
 this.created_at = users.created_at;
 this.updated_at = users.updated_at;
 };
+
+users.findByEmail = (email, callback) => {
+    const sqlString = "SELECT * FROM users WHERE email = ?";
+    db.query(sqlString, [email], (err, result) => {
+        if (err) {
+            return callback(err, null);
+        }
+        if (result.length) {
+            // Trả về người dùng đầu tiên tìm thấy
+            return callback(null, result[0]);
+        }
+        // Không tìm thấy người dùng
+        return callback({ kind: "not_found" }, null);
+    });
+};
 users.getById = (id, callback) => {
-  const sqlString = "SELECT * FROM users WHERE id = ? ";
+  const sqlString = "SELECT * FROM users WHERE user_id = ? ";
   db.query(sqlString, id, (err, result) => {
     if (err) {
       return callback(err);
@@ -33,19 +50,42 @@ users.getAll = (callback) => {
   });
 };
 
-users.insert = (users, callBack) => {
-  const sqlString = "INSERT INTO users SET ?";
-  db.query(sqlString, users, (err, res) => {
-    if (err) {
-      callBack(err);
-      return;
-    }
-    callBack({ id: res.insertId, ...users });
-  });
+users.insert = (newUser, callBack) => {
+    // 1. Kiểm tra xem email đã tồn tại chưa
+    User.findByEmail(newUser.email, (err, user) => {
+        if (user) {
+            // Nếu tìm thấy user, tức là email đã tồn tại
+            return callBack({ kind: "email_exists" }, null);
+        }
+
+        // Nếu email chưa tồn tại, tiếp tục quá trình đăng ký
+        // 2. Mã hóa mật khẩu
+        bcrypt.hash(newUser.password, 10, (err, hash) => { // Giả sử FE gửi 'password'
+            if (err) {
+                return callBack(err, null);
+            }
+            
+            newUser.password_hash = hash; // Gán mật khẩu đã mã hóa
+            delete newUser.password; // Xóa mật khẩu thô
+
+            // 3. Insert vào DB
+            const sqlString = "INSERT INTO users SET ?";
+            db.query(sqlString, newUser, (err, res) => {
+                if (err) {
+                    return callBack(err, null);
+                }
+                // Không trả lại hash mật khẩu
+                delete newUser.password_hash;
+                callBack(null, { user_id: res.insertId, ...newUser });
+            });
+        });
+    });
 };
 
+
+
 users.update = (users, id, callBack) => {
-  const sqlString = "UPDATE users SET ? WHERE id = ?";
+  const sqlString = "UPDATE users SET ? WHERE user_id = ?";
   db.query(sqlString, [users, id], (err, res) => {
     if (err) {
       callBack(err);
@@ -56,7 +96,7 @@ users.update = (users, id, callBack) => {
 };
 
 users.delete = (id, callBack) => {
-  db.query("DELETE FROM users WHERE id = ?", id, (err, res) => {
+  db.query("DELETE FROM users WHERE user_id = ?", id, (err, res) => {
     if (err) {
       callBack(err);
       return;

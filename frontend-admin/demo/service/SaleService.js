@@ -1,11 +1,11 @@
 // demo/service/SaleService.js
 export class SaleService {
     constructor() {
-        this.baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000'; // Thay đổi theo API của bạn
+        this.baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001'; // Thay đổi theo API của bạn
     }
 
     async getSales() {
-        const response = await fetch(`${this.baseUrl}/sale-prs`);
+        const response = await fetch(`${this.baseUrl}/sale-promotionss`);
         if (!response.ok) throw new Error('Không thể lấy danh sách khuyến mãi');
         return response.json();
     }

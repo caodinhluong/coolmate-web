@@ -3,69 +3,78 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
-var indexRouter = require('./routes/index');
-var app = express();
 var cors = require('cors');
+
+// Khởi tạo app
+var app = express();
+
+// --- CẤU HÌNH MIDDLEWARE (Nên đặt tập trung ở đây) ---
+
+// Cho phép các request từ domain khác (CORS)
 app.use(cors());
+
+// Ghi log request ra console
+app.use(logger('dev'));
+
+// Xử lý body của request có Content-Type là application/json
 app.use(express.json());
 
+// Xử lý body của request có Content-Type là application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: false }));
+
+// Xử lý cookies
+app.use(cookieParser());
+
+// Phục vụ các file tĩnh trong thư mục 'public' (ví dụ: ảnh, css, js)
+app.use(express.static(path.join(__dirname, 'public')));
 
 
+// --- CẤU HÌNH VIEW ENGINE (Nếu bạn dùng) ---
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+
+
+// --- CÁC ROUTES CỦA ỨNG DỤNG ---
 const cart_detailsRoutes = require('./routes/cart_details.route');
 const cartsRoutes = require('./routes/carts.route');
 const categoriesRoutes = require('./routes/categories.route');
 const feedbacksRoutes = require('./routes/feedbacks.route');
-const import_invoice_detailsRoutes = require('./routes/import_invoice_details.route');
-const import_invoicesRoutes = require('./routes/import_invoices.route');
 const order_detailsRoutes = require('./routes/order_details.route');
 const ordersRoutes = require('./routes/orders.route');
 const productsRoutes = require('./routes/products.route');
 const sales_promotionsRoutes = require('./routes/sales_promotions.route');
-const suppliersRoutes = require('./routes/suppliers.route');
 const usersRoutes = require('./routes/users.route');
 const vouchersRoutes = require('./routes/vouchers.route');
+const authRoutes = require('./routes/auth.route'); // Nếu bạn có route cho auth
 
-app.use('/cart-detailss', cart_detailsRoutes);
-app.use('/cartss', cartsRoutes);
-app.use('/categoriess', categoriesRoutes);
-app.use('/feedbackss', feedbacksRoutes);
-app.use('/import-invoice-detailss', import_invoice_detailsRoutes);
-app.use('/import-invoicess', import_invoicesRoutes);
-app.use('/order-detailss', order_detailsRoutes);
-app.use('/orderss', ordersRoutes);
-app.use('/productss', productsRoutes);
-app.use('/sales-promotionss', sales_promotionsRoutes);
-app.use('/supplierss', suppliersRoutes);
-app.use('/userss', usersRoutes);
-app.use('/voucherss', vouchersRoutes);
-// app.use('/auth', authRoutes);
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-
-app.use(logger('dev'));
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
-const bodyParser = require('body-parser');
-app.use(bodyParser.json());
+// Lưu ý: Tên route nên nhất quán. Ví dụ: /carts thay vì /cartss
+app.use('/cart-details', cart_detailsRoutes);
+app.use('/carts', cartsRoutes);
+app.use('/categories', categoriesRoutes);
+app.use('/feedbacks', feedbacksRoutes);
+app.use('/order-details', order_detailsRoutes);
+app.use('/orders', ordersRoutes); // Đổi từ /orderss -> /orders cho chuẩn
+app.use('/products', productsRoutes);
+app.use('/sales-promotions', sales_promotionsRoutes);
+app.use('/users', usersRoutes);
+app.use('/vouchers', vouchersRoutes);
+app.use('/auth', authRoutes); // Route cho xác thực người dùng
 
 
+// --- XỬ LÝ LỖI ---
 
-// catch 404 and forward to error handler
+// Bắt lỗi 404 (Không tìm thấy route) và chuyển đến error handler
 app.use(function (req, res, next) {
   next(createError(404));
 });
 
-// error handler
+// Error handler tổng
 app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
+  // set locals, chỉ cung cấp thông tin lỗi trong môi trường development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
+  // render trang lỗi
   res.status(err.status || 500);
   res.render('error');
 });

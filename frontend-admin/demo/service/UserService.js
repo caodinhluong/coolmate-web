@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:3000'; // Thay bằng URL API thực tế
+const API_BASE_URL = 'http://localhost:3001'; // Thay bằng URL API thực tế
 
 export class UserService {
     async getUsers() {

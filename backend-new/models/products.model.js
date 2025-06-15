@@ -8,8 +8,6 @@ this.stock = products.stock;
 this.category_id = products.category_id;
 this.image_url = products.image_url;
 this.title = products.title;
-this.supplier_id = products.supplier_id;
-this.created_at = products.created_at;
 };
 products.getById = (id, callback) => {
   const sqlString = "SELECT * FROM products WHERE product_id = ? ";

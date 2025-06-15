@@ -11,22 +11,18 @@ const AppMenu = () => {
         {
             label: 'DASHBOARD',
             items: [
-                { label: 'Home', icon: 'pi pi-fw pi-home', to: '/' },
                 { label: 'Category', icon: 'pi pi-fw pi-bars', to: '/category', badge: 'NEW' },
                 { label: 'Product', icon: 'pi pi-fw pi-box', to: '/product' },
                 { label: 'Feedback', icon: 'pi pi-fw pi-comments', to: '/feedback' },
-                { label: 'Supplier', icon: 'pi pi-fw pi-truck', to: '/supplier' },
+                { label: 'Voucher', icon: 'pi pi-fw pi-truck', to: '/voucher' },
                 { label: 'User', icon: 'pi pi-fw pi-user', to: '/user' },
-                { label: 'Sale', icon: 'pi pi-fw pi-percentage', to: '/sale' },
-                { label: 'Voucher', icon: 'pi pi-fw pi-money-bill', to: '/voucher' },
                 { label: 'Order', icon: 'pi pi-fw pi-book', to: '/order' },
-                { label: 'Import Invoice', icon: 'pi pi-fw pi-building', to: '/import_invoice' },
             ],
         },
         {
-            label: 'Utilities',
+            label: 'HOME',
             items: [
-                { label: 'PrimeIcons', icon: 'pi pi-fw pi-prime', to: '/utilities/icons' },
+                { label: 'Home', icon: 'pi pi-fw pi-home', to: '/Dashboard' },
             ],
         },
     ];

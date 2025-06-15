@@ -49,7 +49,7 @@ const User = () => {
         return (
             <>
                 <span className="p-column-title">Tên</span>
-                {rowData.name}
+                {rowData.full_name}
             </>
         );
     };
@@ -162,7 +162,6 @@ const User = () => {
                         <Column field="role" header="Vai trò" sortable body={roleBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
                         <Column field="avt_url" header="Ảnh đại diện" body={avtUrlBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
                         <Column field="gender" header="Giới tính" sortable body={genderBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
-                        <Column field="username" header="Tên đăng nhập" sortable body={usernameBodyTemplate} headerStyle={{ minWidth: '12rem' }}></Column>
                     </DataTable>
                 </div>
             </div>

@@ -21,9 +21,8 @@ const AllProductPage = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <NavBar />
-      {/* Phần tiêu đề và tab lọc */}
       <div className="pt-10 flex-grow">
-        <div className="max-w-[90%] mx-auto">
+        {/* <div className="max-w-[90%] mx-auto">
           <h2 className="text-4xl font-extralight mb-4">TẤT CẢ SẢN PHẨM</h2>
           <div className="flex space-x-4 mb-4">
             <button className="px-4 h-12 py-2 bg-blue-500 text-white rounded-full min-w-[100px]">
@@ -42,7 +41,7 @@ const AllProductPage = () => {
               Phụ kiện
             </button>
           </div>
-        </div>
+        </div> */}
         {/* Danh sách sản phẩm */}
         <div className="max-w-[90%] mx-auto py-8">
           <AllProduct products={products} />

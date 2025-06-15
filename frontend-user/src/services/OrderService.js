@@ -39,7 +39,7 @@ const OrderService = {
       console.log("Dữ liệu gửi lên API:", payload);
 
       // Gửi yêu cầu POST đến endpoint đúng
-      const response = await api.post('/orderss/orders', payload);
+      const response = await api.post('/orders/orders', payload);
 
       console.log("Phản hồi API cho createOrder:", response.data);
 

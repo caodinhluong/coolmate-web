@@ -1,11 +1,13 @@
-const API_BASE_URL = 'http://localhost:3001'; // Thay bằng URL API thực tế
+// /demo/service/ProductService.js - PHIÊN BẢN HOÀN THIỆN
+
+const API_BASE_URL = 'http://localhost:3001';
 
 export class ProductService {
     
-    // Lấy danh sách sản phẩm
+    // ... (các hàm getProducts, getCategories giữ nguyên) ...
     async getProducts() {
         try {
-            const response = await fetch(`${API_BASE_URL}/productss`);
+            const response = await fetch(`${API_BASE_URL}/products`);
             if (!response.ok) throw new Error('Không thể lấy danh sách sản phẩm');
             return await response.json();
         } catch (error) {
@@ -14,10 +16,9 @@ export class ProductService {
         }
     }
 
-    // Lấy danh sách danh mục
     async getCategories() {
         try {
-            const response = await fetch(`${API_BASE_URL}/categoriess`);
+            const response = await fetch(`${API_BASE_URL}/categories`);
             if (!response.ok) throw new Error('Không thể lấy danh sách danh mục');
             return await response.json();
         } catch (error) {
@@ -26,49 +27,65 @@ export class ProductService {
         }
     }
 
-    // Thêm sản phẩm mới
+    // Hàm an toàn để xử lý response
+    async _handleResponse(response) {
+        const responseText = await response.text();
+        if (!response.ok) {
+            try {
+                const errorData = JSON.parse(responseText);
+                throw new Error(errorData.sqlMessage || errorData.message || 'Lỗi từ server');
+            } catch (e) {
+                throw new Error(responseText || 'Lỗi không xác định từ server');
+            }
+        }
+
+        // SỬA LỖI: Dùng try...catch để parse JSON một cách an toàn
+        try {
+            // Nếu responseText rỗng, JSON.parse sẽ lỗi, chúng ta sẽ đi vào catch
+            return JSON.parse(responseText);
+        } catch (e) {
+            // Nếu parse thất bại (vì text rỗng hoặc là text thường như "cập nhật thành công"),
+            // nhưng response.ok là true, coi như thành công và trả về object mặc định.
+            return { success: true, message: responseText };
+        }
+    }
+
     async createProduct(product) {
         try {
-            const response = await fetch(`${API_BASE_URL}/productss`, {
+            const response = await fetch(`${API_BASE_URL}/products`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(product),
             });
-            if (!response.ok) throw new Error('Không thể tạo sản phẩm');
-            return await response.json();
+            return await this._handleResponse(response);
         } catch (error) {
             console.error('Lỗi khi tạo sản phẩm:', error);
             throw error;
         }
     }
 
-    // Cập nhật sản phẩm
-    async updateProduct(product) {
+    async updateProduct(productId, productData) {
         try {
-            const response = await fetch(`${API_BASE_URL}/productss/${product.id}`, {
+            const response = await fetch(`${API_BASE_URL}/products/${productId}`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(product),
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(productData),
             });
-            if (!response.ok) throw new Error('Không thể cập nhật sản phẩm');
-            return await response.json();
+            return await this._handleResponse(response);
         } catch (error) {
             console.error('Lỗi khi cập nhật sản phẩm:', error);
             throw error;
         }
     }
 
-    // Xóa sản phẩm
     async deleteProduct(id) {
         try {
-            const response = await fetch(`${API_BASE_URL}/productss/${id}`, {
+            const response = await fetch(`${API_BASE_URL}/products/${id}`, {
                 method: 'DELETE',
             });
-            if (!response.ok) throw new Error('Không thể xóa sản phẩm');
+            if (!response.ok) {
+                throw new Error('Không thể xóa sản phẩm');
+            }
             return response.ok;
         } catch (error) {
             console.error('Lỗi khi xóa sản phẩm:', error);
