@@ -5,7 +5,8 @@ const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: '0404',
-  database: 'coolmate3'
+  database: 'coolmate3',
+  charset: 'utf8mb4' // <
 });
 connection.connect();
 

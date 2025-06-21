@@ -1,45 +1,44 @@
-// controllers/auth.controller.js - Phiên bản sửa lỗi ASYNC
+// controllers/auth.controller.js - Phiên bản KHÔNG MÃ HÓA MẬT KHẨU
 
 const User = require('../models/users.model.js');
-const bcrypt = require('bcryptjs');
+// const bcrypt = require('bcryptjs'); // Không cần bcrypt nữa
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-// Sử dụng async cho hàm login để có thể dùng await
-exports.login = async (req, res) => {
+exports.login = (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
         return res.status(400).send({ message: "Email và mật khẩu không được để trống!" });
     }
 
-    // Dùng try...catch để xử lý lỗi từ các hàm bất đồng bộ
-    try {
-        // Lấy user từ DB - Giả sử User.findByEmail được viết lại để trả về Promise
-        // Nếu không, bạn cần bọc nó trong Promise
-        const user = await new Promise((resolve, reject) => {
-            User.findByEmail(email, (err, user) => {
-                if (err) return reject(err);
-                resolve(user);
-            });
-        });
-
+    User.findByEmail(email, (err, user) => {
+        // Xử lý lỗi từ database
+        if (err) {
+            if (err.kind === "not_found") {
+                return res.status(404).send({ message: "Email hoặc mật khẩu không chính xác." });
+            }
+            console.error("Lỗi server khi tìm người dùng:", err);
+            return res.status(500).send({ message: "Đã xảy ra lỗi server." });
+        }
+        
+        // `user` là đối tượng người dùng lấy từ database
         if (!user) {
              return res.status(404).send({ message: "Email hoặc mật khẩu không chính xác." });
         }
 
-        // *** SỬA LỖI CHÍNH ***
-        // Sử dụng await với bcrypt.compare
-        const passwordIsValid = await bcrypt.compare(
-            password,
-            user.password_hash
-        );
+        // ===== THAY ĐỔI CHÍNH: SO SÁNH MẬT KHẨU TRỰC TIẾP =====
+        // So sánh mật khẩu người dùng gửi lên (`password`) 
+        // với mật khẩu lưu trong DB (`user.password`).
+        // Hãy chắc chắn rằng `user.password` là tên cột đúng.
+        const passwordIsValid = (password === user.password);
 
-        console.log("--- BCRYPT DEBUG ---");
+        console.log("--- DEBUG ĐĂNG NHẬP (KHÔNG MÃ HÓA) ---");
         console.log("Mật khẩu từ request:", `'${password}'`);
-        console.log("Hash từ database:", `'${user.password_hash}'`, "Độ dài:", user.password_hash.length);
-        console.log("Kết quả so sánh (passwordIsValid):", passwordIsValid);
+        console.log("Mật khẩu từ database:", `'${user.password}'`);
+        console.log("Kết quả so sánh:", passwordIsValid);
         console.log("--- KẾT THÚC DEBUG ---");
+        // =========================================================
 
         if (!passwordIsValid) {
             return res.status(401).send({
@@ -48,12 +47,12 @@ exports.login = async (req, res) => {
             });
         }
 
-        // Tạo token
+        // Tạo token (giữ nguyên)
         const token = jwt.sign({ id: user.user_id, role: user.role }, process.env.JWT_SECRET, {
-            expiresIn: 86400
+            expiresIn: 86400 // 24 giờ
         });
 
-        // Trả về kết quả
+        // Trả về kết quả thành công
         res.status(200).send({
             user: {
                 user_id: user.user_id,
@@ -64,12 +63,5 @@ exports.login = async (req, res) => {
             },
             accessToken: token
         });
-
-    } catch (error) {
-         if (error.kind === "not_found") {
-            return res.status(404).send({ message: "Email hoặc mật khẩu không chính xác." });
-        }
-        console.error("Lỗi server khi đăng nhập:", error);
-        return res.status(500).send({ message: "Đã xảy ra lỗi server." });
-    }
+    });
 };

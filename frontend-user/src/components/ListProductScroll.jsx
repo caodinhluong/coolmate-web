@@ -2,28 +2,38 @@ import React, { useState, useEffect, useRef } from "react";
 import ProductCard from "./ProductCard";
 import productService from "../services/ProductService"; // Đường dẫn đến ProductService
 
-const ListProductScroll = () => {
+const ListProductScroll = ({ title }) => {
   const scrollRef = useRef(null);
   const [products, setProducts] = useState([]);
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true); // Thêm trạng thái loading
+  const [loading, setLoading] = useState(true);// Thêm trạng thái loading
 
   // Gọi API để lấy danh sách sản phẩm
-  useEffect(() => {
-    const fetchProducts = async () => {
+   useEffect(() => {
+    // Nếu không có title, không làm gì cả
+    if (!title) {
+      setProducts([]);
+      setLoading(false);
+      return;
+    }
+
+    const fetchProductsByTitle = async () => {
       try {
         setLoading(true);
-        const data = await productService.getAllProducts();
+        setError(null);
+        // 3. Gọi hàm mới từ service với title được truyền vào
+        const data = await productService.getProductsByTitle(title);
         setProducts(data);
       } catch (err) {
-        console.error("Error fetching products:", err);
+        console.error(`Error fetching products for title "${title}":`, err);
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
-    fetchProducts();
-  }, []);
+
+    fetchProductsByTitle();
+  }, [title]); 
 
   // Hàm xử lý cuộn
   const scroll = (direction) => {

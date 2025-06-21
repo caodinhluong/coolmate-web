@@ -12,6 +12,8 @@ import imgCareAndShare from "../assets/banner/mceclip33.png";
 import imgBannerFooter1 from "../assets/banner/mceclip18.webp";
 import imgBannerFooter2 from "../assets/banner/mceclip19.webp";
 import imgBannerFooter3 from "../assets/banner/mceclip2_81.webp";
+import imgbannerQuanLot from "../assets/banner/banner-quan-lot.webp";
+
 
 import dailyBanner from "../assets/banner/hang-ngay-desk-chung.webp";
 import runningBanner from "../assets/banner/running-desk-chung_23.webp";
@@ -33,6 +35,11 @@ const HomePage = () => {
         title: "ĐỒ CHẠY BỘ",
         description: "Cố gắng, thoải mái! Mua combo tiết kiệm đến 30%",
     };
+    const bannerQuanLot = {
+            imageUrl: imgbannerQuanLot,
+            title: "QUẦN LÓT",
+            description: "Thoải mái, dễ chịu | Freeship mọi đơn hàng",
+        };
 
     return (
         <div>
@@ -52,11 +59,11 @@ const HomePage = () => {
             />
              <div className="container mx-auto mt-10 flex justify-between items-center mb-4">
                 <h2 className="text-2xl font-bold">SẢN PHẨM MẶC HÀNG NGÀY</h2>
-                <a href="#" className="text-blue-600 hover:underline">
+                <a href="/dailywear" className="text-blue-600 hover:underline">
                     Xem Thêm
                 </a>
             </div>
-            <ListProductScroll />
+            <ListProductScroll title={bannerData1.title}/>
             <BannerBlock
                 imageUrl={bannerData2.imageUrl}
                 title={bannerData2.title}
@@ -64,11 +71,23 @@ const HomePage = () => {
             />
              <div className="container mx-auto mt-10 flex justify-between items-center mb-4">
                 <h2 className="text-2xl font-bold">ĐỒ CHẠY BỘ</h2>
-                <a href="#" className="text-blue-600 hover:underline">
+                <a href="/sportwear" className="text-blue-600 hover:underline">
                     Xem Thêm
                 </a>
             </div>
-            <ListProductScroll />
+            <ListProductScroll title={bannerData2.title}/>
+             <BannerBlock
+                imageUrl={bannerQuanLot.imageUrl}
+                title={bannerQuanLot.title}
+                description={bannerQuanLot.description}
+            />
+             <div className="container mx-auto mt-10 flex justify-between items-center mb-4">
+                <h2 className="text-2xl font-bold">QUẦN LÓT </h2>
+                <a href="/underwear" className="text-blue-600 hover:underline">
+                    Xem Thêm
+                </a>
+            </div>
+            <ListProductScroll title={bannerQuanLot.title}/>
 
             <img src={imgCareAndShare} className="w-[90%] mx-auto rounded-2xl cursor-pointer mt-10 mb-20" />
             {/* Thêm div mới dựa trên ảnh */}

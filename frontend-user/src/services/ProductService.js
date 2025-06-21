@@ -111,6 +111,117 @@ const productService = {
       throw new Error(`Failed to fetch product with id ${id}: ${error.message}`);
     }
   },
+  /**
+   * Lấy danh sách sản phẩm dựa trên title chính xác.
+   * @param {string} title - Title của sản phẩm cần tìm.
+   * @returns {Promise<Product[]>} - Mảng các sản phẩm tìm được.
+   */
+  getProductsByTitle: async (title) => {
+    try {
+      // Gọi API với query parameter
+      // ví dụ: /products/search?title=MẶC HÀNG NGÀY
+      const response = await api.get('/products/title', {
+        params: {
+          title: title,
+        },
+      });
+
+      console.log(`API response for getProductsByTitle (title: ${title}):`, response);
+
+      const products = response?.data || response;
+      if (!products || !Array.isArray(products)) {
+        // Nếu API trả về không phải mảng, trả về mảng rỗng để tránh lỗi
+        console.warn(`Invalid response for title "${title}". Expected an array.`);
+        return [];
+      }
+
+      // Map dữ liệu trả về thành các đối tượng Product
+      const mappedProducts = products.map(item => new Product(item));
+      console.log(`Mapped products for title "${title}":`, mappedProducts);
+      return mappedProducts;
+
+    } catch (error) {
+      // Nếu API trả về lỗi 404 (không tìm thấy), axios sẽ ném ra lỗi.
+      // Chúng ta sẽ bắt lỗi và trả về mảng rỗng để component hiển thị "Không có sản phẩm"
+      if (error.response && error.response.status === 404) {
+        return [];
+      }
+      // Ném ra các lỗi khác
+      throw new Error(`Failed to fetch products with title "${title}": ${error.message}`);
+    }
+  },
+   searchProductsByName: async (name) => {
+    try {
+      // Gọi API với query parameter: /products/search?name=tên_sản_phẩm
+      const response = await api.get('/products/search', {
+        params: { name }
+      });
+
+      console.log(`API response for searchProductsByName (name: ${name}):`, response);
+
+      const products = response?.data || response;
+      if (!products || !Array.isArray(products)) {
+        console.warn(`Invalid search response for "${name}". Expected an array.`);
+        return []; // Trả về mảng rỗng nếu không có dữ liệu hợp lệ
+      }
+
+      // Map dữ liệu trả về thành các đối tượng Product
+      return products.map(item => new Product(item));
+
+    } catch (error) {
+      // Nếu có lỗi, log ra và trả về mảng rỗng để component không bị crash
+      console.error(`Failed to fetch products with name "${name}":`, error.message);
+      return [];
+    }
+  },
+  getSearchSuggestions: async (query) => {
+    if (!query) {
+      return [];
+    }
+    try {
+      const response = await api.get('/products/suggestions', {
+        params: { q: query }
+      });
+      // API này chỉ trả về mảng {product_id, name}, không cần map qua class Product
+      return response.data;
+    } catch (error) {
+      console.error("Failed to fetch search suggestions:", error.message);
+      return []; // Trả về mảng rỗng nếu có lỗi
+    }
+  },
+  /**
+   * Lấy danh sách sản phẩm theo category ID.
+   * @param {number} categoryId - ID của danh mục.
+   * @returns {Promise<Product[]>} - Mảng các sản phẩm thuộc danh mục đó.
+   */
+  getProductsByCategoryId: async (categoryId) => {
+    try {
+      // Gọi API mới tạo: /products/category?id=...
+      const response = await api.get('/products/category', {
+        params: {
+          category_id: categoryId,
+        },
+      });
+
+      console.log(`API response for getProductsByCategoryId (ID: ${categoryId}):`, response);
+
+      const products = response?.data || response;
+      if (!products || !Array.isArray(products)) {
+        console.warn(`Invalid response for categoryId "${categoryId}". Expected an array.`);
+        return [];
+      }
+
+      // Map dữ liệu trả về thành các đối tượng Product
+      const mappedProducts = products.map(item => new Product(item));
+      console.log(`Mapped products for categoryId "${categoryId}":`, mappedProducts);
+      return mappedProducts;
+
+    } catch (error) {
+      console.error(`Failed to fetch products for categoryId "${categoryId}":`, error.message);
+      return []; // Trả về mảng rỗng nếu có lỗi để component không bị crash
+    }
+  },
 };
+
 
 export default productService;

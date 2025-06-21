@@ -1,40 +1,40 @@
 const Orders = require("../models/orders.model.js");
 
 module.exports = {
-  getMonthlyRevenue : (req, res) => {
+  getMonthlyRevenue: (req, res) => {
     const year = req.query.year || new Date().getFullYear(); // Lấy năm từ query, mặc định là năm hiện tại
     Orders.getMonthlyRevenue(parseInt(year), (err, data) => {
-        if (err) res.status(500).send({ message: err.message });
-        else res.send(data);
+      if (err) res.status(500).send({ message: err.message });
+      else res.send(data);
     });
   },
-getBestSelling: (req, res) => {
+  getBestSelling: (req, res) => {
     const options = {
-        limit: parseInt(req.query.limit) || 10,
-        startDate: req.query.startDate, // ví dụ: '2024-01-01'
-        endDate: req.query.endDate,     // ví dụ: '2024-12-31'
+      limit: parseInt(req.query.limit) || 10,
+      startDate: req.query.startDate, // ví dụ: '2024-01-01'
+      endDate: req.query.endDate,     // ví dụ: '2024-12-31'
     };
     Orders.getBestSellingProducts(options, (err, data) => {
-        if (err) res.status(500).send({ message: err.message });
-        else res.send(data);
+      if (err) res.status(500).send({ message: err.message });
+      else res.send(data);
     });
   },
-getSoldList : (req, res) => {
+  getSoldList: (req, res) => {
     const options = {
-        startDate: req.query.startDate,
-        endDate: req.query.endDate,
+      startDate: req.query.startDate,
+      endDate: req.query.endDate,
     };
     Order.getSoldProductsList(options, (err, data) => {
-        if (err) res.status(500).send({ message: err.message });
-        else res.send(data);
+      if (err) res.status(500).send({ message: err.message });
+      else res.send(data);
     });
-},
-getOverview: (req, res) => {
+  },
+  getOverview: (req, res) => {
     Orders.getOverviewStats((err, data) => {
-        if (err) res.status(500).send({ message: err.message });
-        else res.send(data);
+      if (err) res.status(500).send({ message: err.message });
+      else res.send(data);
     });
-},
+  },
   getAll: (req, res) => {
     Orders.getAll((err, result) => {
       if (err) {
@@ -105,6 +105,7 @@ getOverview: (req, res) => {
   },
 
   createOrder: (req, res) => {
+    // ... (phần lấy dữ liệu và validation của bạn giữ nguyên)
     const { status, payment_method, voucher_id, total_amount, address, customer_name, phone, order_details } = req.body;
 
     if (!payment_method || !total_amount || !address || !customer_name || !phone || !order_details || !Array.isArray(order_details)) {
@@ -118,26 +119,34 @@ getOverview: (req, res) => {
     }
 
     const orderData = {
-      status,
+      status, // sẽ có giá trị undefined nếu client không gửi, model sẽ xử lý
       payment_method,
-      voucher_id,
+      voucher_id, // sẽ có giá trị undefined nếu client không gửi, model sẽ xử lý
       total_amount,
       address,
       customer_name,
       phone,
     };
 
-    Orders.create(orderData, order_details, (err, result) => {
+
+    // Gọi hàm create từ model
+    Orders.create(orderData, order_details, (err, createdOrder) => {
       if (err) {
         console.error("Lỗi khi tạo hóa đơn:", err);
-        return res.status(500).json({ message: "Lỗi server khi tạo hóa đơn", error: err });
+        return res.status(500).json({ message: "Lỗi server khi tạo hóa đơn", error: err.message });
       }
 
-      res.status(201).json({
-        message: "Tạo hóa đơn thành công",
-        order_id: result.order_id,
-        details: result.details,
-      });
+      // ========================================================
+      // ===== SỬA ĐỔI CHÍNH LÀ Ở ĐÂY ===========================
+      // ========================================================
+
+      // `createdOrder` bây giờ là một object đầy đủ từ model đã sửa:
+      // { order_id, status, total_amount, customer_name, ... }
+
+      // Trả về toàn bộ đối tượng `createdOrder` cho client
+      res.status(201).json(createdOrder);
+
     });
   },
+
 };

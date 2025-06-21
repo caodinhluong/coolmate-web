@@ -63,7 +63,7 @@ const NamNavBarPage = () => {
 
                 <button className="text-black text-xl underline">Xem Thêm</button>
             </div>
-            <ListProductScroll />
+            <ListProductScroll title="Bán chạy nhất"/>
 
             <BannerBlock
                 imageUrl={bannerMacHangNgay.imageUrl}
@@ -76,7 +76,7 @@ const NamNavBarPage = () => {
                 </div>
                 <button className="text-black text-xl underline">Xem Thêm</button>
             </div>
-            <ListProductScroll />
+            <ListProductScroll title="Bán chạy nhất"/>
 
 
             <BannerBlock
@@ -90,7 +90,7 @@ const NamNavBarPage = () => {
                 </div>
                 <button className="text-black text-xl underline">Xem Thêm</button>
             </div>
-            <ListProductScroll />
+            <ListProductScroll title="Đồ chạy bộ"/>
 
 
             <BannerBlock
@@ -104,7 +104,7 @@ const NamNavBarPage = () => {
                 </div>
                 <button className="text-black text-xl underline">Xem Thêm</button>
             </div>
-            <ListProductScroll />
+            <ListProductScroll title="Quần lót"/>
 
             <div className=" max-w-[90%] mx-auto flex gap-5 mb-20 ">
                 {bannerFooter.map((a, index) => (

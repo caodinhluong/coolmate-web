@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import CartItem from '../components/CartItem';
 import NavBar from '../components/NavBar';
 import OrderService from '../services/OrderService.js';
+import ProductService from '../services/ProductService.js';
+
 
 const PayMentPage = () => {
   // Load giỏ hàng từ localStorage
@@ -111,18 +113,20 @@ const PayMentPage = () => {
   );
 
   // Hàm xử lý đặt hàng
+ // Hàm xử lý đặt hàng
   const handlePlaceOrder = async () => {
     try {
+      // 1. Validation (giữ nguyên)
       if (selectedItems.length === 0) {
         setMessage('Vui lòng chọn ít nhất một sản phẩm để đặt hàng.');
         return;
       }
-
       if (!userInfo.name || !userInfo.phone || !userInfo.address) {
         setMessage('Vui lòng điền đầy đủ họ tên, số điện thoại và địa chỉ.');
         return;
       }
 
+      // 2. Chuẩn bị dữ liệu để gửi lên backend (giữ nguyên)
       const orderData = {
         payment_method: selectedPayment,
         total_amount: totalPrice,
@@ -131,23 +135,66 @@ const PayMentPage = () => {
         phone: userInfo.phone,
         status: 'pending',
       };
-
       const orderDetails = selectedCartItems.map((item) => ({
         product_id: item.id,
         quantity: item.quantity,
         price: item.price,
-        size: item.size,
+        size: item.size || null,
       }));
 
-      await OrderService.createOrder(orderData, orderDetails);
+      // 3. Gửi yêu cầu tạo đơn hàng đến backend
+      const createdOrderResponse = await OrderService.createOrder(orderData, orderDetails);
 
-      setMessage('Đơn hàng của bạn đã được gửi đi, vui lòng chờ xác nhận từ chúng tôi.');
+      // 4. Nếu tạo đơn hàng thành công, tiến hành lấy thông tin ảnh và lưu vào localStorage
+      if (createdOrderResponse && createdOrderResponse.order_id) {
+        
+        // ===================================================================
+        // ===== LOGIC MỚI: Lấy thông tin đầy đủ của sản phẩm =============
+        // ===================================================================
 
-      setCartItems(cartItems.filter((item) => !selectedItems.includes(item.id)));
+        // Tạo một mảng các promise, mỗi promise là một lệnh gọi API getProductById
+        const productDetailPromises = selectedCartItems.map(item =>
+          ProductService.getProductById(item.id)
+        );
+
+        // Chờ tất cả các API call hoàn thành
+        const fullProductDetails = await Promise.all(productDetailPromises);
+        
+        // Bây giờ `fullProductDetails` là một mảng các đối tượng Product đầy đủ.
+        // Chúng ta sẽ kết hợp nó với `selectedCartItems` để tạo đối tượng lưu trữ cuối cùng.
+
+        const orderToSave = {
+          id: createdOrderResponse.order_id,
+          date: createdOrderResponse.order_date || new Date().toISOString(),
+          total: createdOrderResponse.total_amount,
+          status: createdOrderResponse.status,
+          items: selectedCartItems.map((item, index) => {
+            // Lấy thông tin đầy đủ tương ứng với sản phẩm trong giỏ hàng
+            const productInfo = fullProductDetails[index];
+            return {
+              id: item.id,
+              name: productInfo.name, // Lấy tên từ thông tin đầy đủ
+              image: productInfo.image_url, // Lấy chuỗi ảnh từ thông tin đầy đủ
+              quantity: item.quantity, // Lấy số lượng từ giỏ hàng
+              size: item.size || 'N/A', // Lấy size từ giỏ hàng
+              price: item.price,
+            };
+          }),
+        };
+
+        // 5. Lưu vào localStorage (giữ nguyên)
+        const existingOrders = JSON.parse(localStorage.getItem('guestOrders')) || [];
+        const updatedOrders = [...existingOrders, orderToSave];
+        localStorage.setItem('guestOrders', JSON.stringify(updatedOrders));
+      }
+
+      // 6. Cập nhật giao diện (giữ nguyên)
+      setMessage('Đặt hàng thành công! Bạn có thể xem lại đơn hàng của mình tại trang "Theo dõi đơn hàng".');
+
+      const remainingCartItems = cartItems.filter((item) => !selectedItems.includes(item.id));
+      setCartItems(remainingCartItems);
       setSelectedItems([]);
-      localStorage.setItem('cart', JSON.stringify(
-        cartItems.filter((item) => !selectedItems.includes(item.id))
-      ));
+      localStorage.setItem('cart', JSON.stringify(remainingCartItems));
 
       setUserInfo({
         title: 'Anh',
@@ -158,11 +205,11 @@ const PayMentPage = () => {
         note: '',
         giftWrap: false,
       });
+
     } catch (error) {
       setMessage(`Đặt hàng thất bại: ${error.message}`);
     }
   };
-
   return (
     <>
       <NavBar />

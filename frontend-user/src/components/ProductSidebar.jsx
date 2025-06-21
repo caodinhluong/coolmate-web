@@ -22,20 +22,11 @@ const ProductSidebar = ({ onFilterChange }) => {
     const sizes = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'];
 
     const colors = [
-        { name: 'Phối màu', value: 'linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet)', key: 'multi' },
         { name: 'Đen', value: '#000000', key: 'black' },
         { name: 'Xám', value: '#808080', key: 'gray' },
         { name: 'Trắng', value: '#FFFFFF', key: 'white' },
-        { name: 'Xanh lam', value: '#0000FF', key: 'blue' },
-        { name: 'Xanh lá', value: '#008000', key: 'green' },
         { name: 'Xanh ngọc', value: '#40E0D0', key: 'turquoise' },
-        { name: 'Đỏ', value: '#FF0000', key: 'red' },
-        { name: 'Cam', value: '#FFA500', key: 'orange' },
-        { name: 'Vàng', value: '#FFFF00', key: 'yellow' },
-        { name: 'Tím', value: '#800080', key: 'purple' },
-        { name: 'Nâu', value: '#A52A2A', key: 'brown' },
         { name: 'Hồng', value: '#FFC0CB', key: 'pink' },
-        { name: 'Xanh đậm', value: '#00008B', key: 'darkblue' },
         { name: 'Đen xám', value: '#36454F', key: 'charcoalgray' },
     ];
     

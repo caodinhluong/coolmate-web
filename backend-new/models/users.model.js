@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const users = (users) => {
 this.user_id = users.user_id;
 this.email = users.email;
-this.password_hash = users.password_hash;
+this.password = users.password;
 this.full_name = users.full_name;
 this.birth_date = users.birth_date;
 this.gender = users.gender;
@@ -65,7 +65,7 @@ users.insert = (newUser, callBack) => {
                 return callBack(err, null);
             }
             
-            newUser.password_hash = hash; // Gán mật khẩu đã mã hóa
+            newUser.password = hash; // Gán mật khẩu đã mã hóa
             delete newUser.password; // Xóa mật khẩu thô
 
             // 3. Insert vào DB
@@ -75,7 +75,7 @@ users.insert = (newUser, callBack) => {
                     return callBack(err, null);
                 }
                 // Không trả lại hash mật khẩu
-                delete newUser.password_hash;
+                delete newUser.password;
                 callBack(null, { user_id: res.insertId, ...newUser });
             });
         });

@@ -31,6 +31,7 @@ const LoginModal = ({ isOpen, onClose }) => {
       const { user } = await authService.login(email, password);
       console.log('Logged in user:', user); // Để debug, có thể thay bằng thông báo
       setLoading(false);
+      window.dispatchEvent(new Event('loginSuccess'));
       onClose(); // Đóng modal sau khi đăng nhập thành công
     } catch (err) {
       setError(err.message);

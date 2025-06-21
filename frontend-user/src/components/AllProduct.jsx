@@ -93,7 +93,7 @@ const AllProduct = () => {
                             </span>
                         ))}
                     </nav>
-                    <h1 className="text-2xl font-extrabold mt-2">TẤT CẢ SẢN PHẨM</h1>
+                    <h2 className="text-4xl font-extrabold mt-2">TẤT CẢ SẢN PHẨM</h2>
                 </div>
 
                 <div className="flex flex-col md:flex-row gap-8">
@@ -137,7 +137,7 @@ const AllProduct = () => {
                     </div>
                 </div>
             </div>
-            <Footer />
+
         </div>
     );
 };

@@ -176,7 +176,19 @@ Order.create = (orderData, orderDetailsData, callback) => {
 
             connection.release();
             console.log("Transaction successful, order_id:", orderId);
-            callback(null, { order_id: orderId, details: detailResult });
+             // =========================================================
+                // ===== SỬA ĐỔI Ở ĐÂY: Trả về dữ liệu đầy đủ hơn ========
+                // =========================================================
+
+                // Tạo một đối tượng kết quả hoàn chỉnh
+                const createdOrderData = {
+                    ...orderData, // Sao chép tất cả dữ liệu đầu vào (name, phone, address, total...)
+                    order_id: orderId, // Thêm order_id mới được tạo
+                    order_date: orderValues[1], // Lấy ngày tạo từ mảng orderValues (đã được new Date())
+                };
+                
+                // Bây giờ callback sẽ trả về một object hoàn chỉnh
+                callback(null, createdOrderData);
           });
         });
       });

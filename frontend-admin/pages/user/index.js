@@ -91,7 +91,7 @@ const User = () => {
     };
 
     const avtUrlBodyTemplate = (rowData) => {
-        const imagePath = rowData.avt_url ? `/images/${rowData.avt_url}` : null;
+        const imagePath = rowData.avatar_url ? `/avt/${rowData.avatar_url}` : null;
         return (
             <>
                 <span className="p-column-title">Ảnh đại diện</span>

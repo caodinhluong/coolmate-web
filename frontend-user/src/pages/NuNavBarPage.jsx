@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 import NavBar from "../components/NavBar";
 import Banner from "../components/Banner";
 import Footer from "../components/Footer";
@@ -5,7 +7,8 @@ import Category from "../components/Category";
 import HomepageBrand from "../components/HomepageBrand";
 import GenderSelector from "../components/GenderSelector";
 import BannerBlock from "../components/BannerBlock";
-import ListProductScoll from "../components/ListProductScroll";
+// Corrected component import name
+import ListProductScroll from "../components/ListProductScroll";
 
 import videoBanner from "../assets/banner/COOLMATE_TVC_MASTER_2.mp4";
 import imgannerYoga from "../assets/banner/banner-yoga.webp";
@@ -34,7 +37,7 @@ const NuNavBarPage = () => {
     };
     const bannerRunning = {
         imageUrl: imgbannerRunning,
-        title: "RUNNING COLLECTON",
+        title: "RUNNING COLLECTION", // Corrected typo from COLLECTON to COLLECTION
         description: "Để mỗi bước chạy đều là niềm vui, để hành trình nào cũng là hành trình tốt hơn mỗi ngày.",
     };
     const bannerSportswear = {
@@ -80,36 +83,51 @@ const NuNavBarPage = () => {
                     <Category selectedGender={"female"} />
                 </div>
             </div>
-            <h2 className="max-w-[90%] mx-auto text-4xl font-semibold mb-3">KHÁM PHÁ</h2>
-            <ListProductScoll />
 
-            {/*  */}
+            {/* Updated Section: KHÁM PHÁ */}
+            <div className="flex items-center justify-between w-full max-w-[90%] mx-auto mt-10 mb-5">
+                <h2 className="text-3xl font-semibold">KHÁM PHÁ</h2>
+                <a className="text-black text-xl underline">Xem Thêm</a>
+            </div>
+            <ListProductScroll title="Sản phẩm nữ mới" />
+
+            {/* Updated Section: YOGA */}
             <BannerBlock
                 imageUrl={bannerYoga.imageUrl}
                 title={bannerYoga.title}
                 description={bannerYoga.description}
             />
-            <h2 className="max-w-[90%] mt-10 mx-auto text-4xl font-semibold mb-3">FEEL NOTHING TO FEEL EVERYTHING</h2>
-            <ListProductScoll />
+            <div className="flex items-center justify-between w-full max-w-[90%] mx-auto mt-10 mb-5">
+                <h2 className="text-3xl font-semibold">YOGA COLLECTION</h2>
+    <a href="/yoga" className="text-black text-xl underline">Xem Thêm</a>
+            </div>
+            <ListProductScroll title="yoga" />
 
 
-            {/*  */}
+            {/* Updated Section: RUNNING */}
             <BannerBlock
                 imageUrl={bannerRunning.imageUrl}
                 title={bannerRunning.title}
                 description={bannerRunning.description}
             />
-            <h2 className="max-w-[90%] mt-10 mx-auto text-4xl font-semibold mb-3">ENJOY YOUR RUN</h2>
-            <ListProductScoll />
+            <div className="flex items-center justify-between w-full max-w-[90%] mx-auto mt-10 mb-5">
+                <h2 className="text-3xl font-semibold">RUNNING COLLECTION</h2>
+                <a href="/nurunningwear" className="text-black text-xl underline">Xem Thêm</a>
+            </div>
+            <ListProductScroll title="Sản phẩm nữ mới" />
 
-            {/*  */}
+
+            {/* Updated Section: SPORTSWEAR */}
             <BannerBlock
                 imageUrl={bannerSportswear.imageUrl}
                 title={bannerSportswear.title}
                 description={bannerSportswear.description}
             />
-            <h2 className="max-w-[90%] mt-10 mx-auto text-4xl font-semibold mb-3">MOVE MORE, MOVE BETTER</h2>
-            <ListProductScoll />
+            <div className="flex items-center justify-between w-full max-w-[90%] mx-auto mt-10 mb-5">
+                <h2 className="text-3xl font-semibold">SPORTSWEAR COLLECTION</h2>
+                <a href="/nusportwear" className="text-black text-xl underline">Xem Thêm</a>
+            </div>
+            <ListProductScroll title="bra" />
 
             {/*  */}
             <h2 className="max-w-[90%] mt-20 mx-auto text-4xl font-semibold mb-3">MIX AND MATCH</h2>
@@ -119,7 +137,7 @@ const NuNavBarPage = () => {
                         key={index}
                         className="cursor-pointer relative bg-white rounded-lg flex flex-col items-center"
                     >
-                        <img src={mix.image} className=" w-full rounded-md" />
+                        <img src={mix.image} alt={`Mix and Match ${index + 1}`} className=" w-full rounded-md" />
                         <button className="w-37 h-13 text-lg absolute left-5  bottom-4  mt-4 bg-white  border-black text-black px-4 py-2 rounded-full  hover:bg-gray-200">
                             MUA NGAY
                         </button>
@@ -134,7 +152,7 @@ const NuNavBarPage = () => {
 
 
             <h2 className="max-w-[90%] mt-20 mx-auto text-4xl font-semibold mb-3">CÔNG NGHỆ VẢI NỔI BẬT</h2>
-            <img src={imgCongNgheVai} className="max-w-[90%] mx-auto mb-10"></img>
+            <img src={imgCongNgheVai} alt="Công nghệ vải nổi bật" className="max-w-[90%] mx-auto mb-10"></img>
 
             <h2 className="max-w-[90%] mt-20 mx-auto text-4xl font-semibold mb-3">GẶP NHỮNG ĐẠI SỨ CỦA CHÚNG TÔI</h2>
             <div className=" max-w-[90%] mx-auto overflow-x-auto flex mx-aut gap-5 mb-20 ">
@@ -143,7 +161,7 @@ const NuNavBarPage = () => {
                         key={index}
                         className=" bg-white rounded-lg flex flex-col items-center"
                     >
-                        <img src={daisu.image} className=" w-full rounded-md" />
+                        <img src={daisu.image} alt={`Đại sứ ${index + 1}`} className=" w-full rounded-md" />
 
                     </div>
                 ))}
@@ -152,16 +170,16 @@ const NuNavBarPage = () => {
             <div className="w-full bg-neutral-200 h-150">
                 <h2 className="w-105 mx-auto pt-20 text-3xl font-bold">COOLMATE VÀ CỘNG ĐỒNG</h2>
                 <div className=" max-w-[95%] mx-auto flex mx-auto gap-5 mb-20 mt-10   ">
-                {congDong.map((congdong, index) => (
-                    <div
-                        key={index}
-                        className=" rounded-3xl overflow-hidden "
-                    >
-                        <img src={congdong.image} className=" w-full object-cover hover:scale-105 duration-500"  />
+                    {congDong.map((congdong, index) => (
+                        <div
+                            key={index}
+                            className=" rounded-3xl overflow-hidden "
+                        >
+                            <img src={congdong.image} alt={`Cộng đồng ${index + 1}`} className=" w-full object-cover hover:scale-105 duration-500" />
 
-                    </div>
-                ))}
-            </div>
+                        </div>
+                    ))}
+                </div>
 
             </div>
             <Footer />

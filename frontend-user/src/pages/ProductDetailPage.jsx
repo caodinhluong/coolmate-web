@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
 import productService from "../services/ProductService";
+import ProductReviews from "../components/ProductReviews"; // <-- IMPORT MỚI
 
 // Icon giỏ hàng
 import { FaShoppingCart, FaShareAlt } from "react-icons/fa";
@@ -231,7 +232,7 @@ const ProductDetailPage = () => {
                   selectedColor === color ? "border-blue-500 border-2" : "border-gray-300"
                 }`}
                 onClick={() => handleColorClick(color)}
-                title={color.name} // Hiển thị tên màu khi hover
+                title={color.name}
               >
                 <div
                   className="w-full h-full rounded-full"
@@ -269,7 +270,6 @@ const ProductDetailPage = () => {
 
         {/* Nút mua hàng và Số lượng */}
         <div className="mt-6 relative rounded-full">
-          {/* Số lượng - Đặt absolute ở góc trái của nút "Thêm vào giỏ hàng" */}
           <div className="h-full w-27 absolute left-0 top-1/2 transform -translate-y-1/2 flex items-center gap-1 bg-black border border-gray-300 rounded-full px-2 py-1 shadow-sm">
             <button
               className="w-10 h-10 rounded-full text-white text-center text-xl font-medium hover:bg-black cursor-pointer"
@@ -285,8 +285,6 @@ const ProductDetailPage = () => {
               +
             </button>
           </div>
-
-          {/* Nút mua hàng */}
           <div className="flex gap-4">
             <button
               onClick={handleAddToCart}
@@ -298,6 +296,11 @@ const ProductDetailPage = () => {
           </div>
         </div>
       </div>
+    </div>
+    
+    {/* <-- THÊM PHẦN ĐÁNH GIÁ VÀ BÌNH LUẬN --> */}
+    <div className="max-w-[100%] mx-auto px-4 py-8 mt-8">
+        <ProductReviews productId={id} />
     </div>
     <Footer />
   </div>
